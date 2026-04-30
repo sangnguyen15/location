@@ -2,8 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <!-- Thẻ meta viewport gốc (Khóa zoom) -->
-  <meta name="viewport" id="viewportMeta" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Vị Trí Sản Phẩm">
@@ -11,7 +10,7 @@
   <title>Vị Trí Sản Phẩm</title>
   <style>
     :root { --pharma-blue: #0056b3; --light-blue: #e7f1ff; --warn-orange: #fd7e14; --danger-red: #dc3545; }
-    body { font-family: -apple-system, sans-serif; margin: 0; background: #f0f2f5; color: #333; touch-action: manipulation; }
+    body { font-family: -apple-system, sans-serif; margin: 0; background: #f0f2f5; color: #333; touch-action: manipulation; overflow-x: hidden; }
 
     /* FIXED HEADER */
     .fixed-header {
@@ -43,7 +42,6 @@
     input:focus { border-color: var(--pharma-blue); }
     .clear-btn { position: absolute; right: 10px; color: #ccc; font-size: 18px; cursor: pointer; padding: 5px; display: none; }
 
-    /* NÚT XÓA TẤT CẢ */
     .btn-reset {
       background: var(--danger-red);
       color: white; border: none; padding: 10px;
@@ -53,7 +51,6 @@
     }
     .btn-reset:active { opacity: 0.8; }
     
-    /* SUGGESTION BOX */
     .suggestions {
       position: absolute; top: 45px; width: 100%; background: white;
       border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -61,7 +58,6 @@
     }
     .sug-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 15px; cursor: pointer;}
 
-    /* TABS */
     .tab-container { display: flex; overflow-x: auto; padding: 5px 10px 10px; gap: 8px; scrollbar-width: none; }
     .tab-container::-webkit-scrollbar { display: none; }
     .tab { 
@@ -71,16 +67,12 @@
     }
     .tab.active { background: var(--pharma-blue); color: white; }
     
-    /* CSS ICON BẢN ĐỒ TRONG TAB */
     .map-icon {
       font-size: 14px; margin-left: 6px; padding: 2px 4px;
       background: rgba(255, 255, 255, 0.4); border-radius: 4px;
-      transition: transform 0.1s;
     }
-    .map-icon:active { transform: scale(0.9); }
     .tab.active .map-icon { background: rgba(255, 255, 255, 0.2); }
 
-    /* CONTENT AREA */
     .content { margin-top: calc(240px + env(safe-area-inset-top)); padding: 15px; }
 
     .card {
@@ -95,47 +87,45 @@
     .pos-box { margin-top: 8px; border: 1px solid var(--pharma-blue); color: var(--pharma-blue); padding: 6px; border-radius: 6px; text-align: center; font-size: 14px; background: white;}
 
     /* =========================================
-       CSS MODAL (POPUP) ĐÃ ĐƯỢC CẢI TIẾN KÍCH THƯỚC
+       POPUP SƠ ĐỒ KHO (CHUYÊN NGHIỆP)
        ========================================= */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85); z-index: 9999;
+      background: rgba(0, 0, 0, 0.9); z-index: 9999;
       display: none; justify-content: center; align-items: center;
-      opacity: 0; animation: fadeIn 0.2s forwards;
     }
-    @keyframes fadeIn { to { opacity: 1; } }
     .modal-content {
-      position: relative; 
-      width: 98%; /* Tăng độ rộng chiếm gần hết màn hình */
-      max-width: 800px; 
-      max-height: 92vh; /* Tăng chiều cao để ảnh hiển thị to hơn */
-      background: white; border-radius: 10px; display: flex; flex-direction: column;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4); overflow: hidden;
+      position: relative; width: 100%; height: 100%; 
+      display: flex; flex-direction: column; overflow: hidden;
     }
     .modal-header {
-      padding: 10px 15px; background: var(--pharma-blue); color: white;
-      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px; color: white; display: flex; 
+      justify-content: space-between; align-items: center;
+      background: rgba(0,0,0,0.5); z-index: 10;
+      padding-top: calc(15px + env(safe-area-inset-top));
     }
-    .modal-header-title {
-      display: flex; flex-direction: column;
-    }
-    .modal-header-title span { font-weight: bold; font-size: 1.1rem; }
-    .modal-header-title small { font-size: 0.75rem; color: #e7f1ff; margin-top: 2px; }
+    .modal-header-title span { font-weight: bold; font-size: 1.2rem; }
+    .modal-header-title small { display: block; font-size: 0.8rem; opacity: 0.8; }
     
     .close-modal {
-      font-size: 22px; cursor: pointer; width: 34px; height: 34px;
+      font-size: 28px; cursor: pointer; width: 44px; height: 44px;
       display: flex; justify-content: center; align-items: center;
-      background: rgba(255,255,255,0.2); border-radius: 50%;
     }
-    .close-modal:active { background: rgba(255,255,255,0.4); }
+
+    /* VÙNG CHỨA ẢNH - CHẶN CẮT CÁC PHẦN TRÀN RA NGOÀI */
     .modal-body {
-      padding: 0; /* Xóa khoảng trắng thừa để ảnh sát viền màn hình */
-      overflow: auto; -webkit-overflow-scrolling: touch;
-      display: flex; justify-content: center; align-items: flex-start; background: #e9ecef;
-      height: 100%; /* Đẩy dài body xuống hết cỡ */
+      flex: 1; position: relative; overflow: hidden;
+      display: flex; justify-content: center; align-items: center;
+      touch-action: none; /* Quan trọng: Tắt mặc định để JS xử lý zoom */
     }
+
+    /* ẢNH SƠ ĐỒ */
     .modal-img { 
-      width: 100%; height: auto; display: block; 
+      max-width: 100%; max-height: 100%;
+      transition: transform 0.1s ease-out; /* Tạo độ mượt khi zoom */
+      will-change: transform;
+      user-select: none;
+      -webkit-user-drag: none;
     }
   </style>
 </head>
@@ -143,7 +133,6 @@
 
 <div class="fixed-header">
   <div class="app-title">TRA CỨU VỊ TRÍ</div>
-  
   <div class="search-area">
     <div class="input-group">
       <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -151,17 +140,14 @@
       <span class="clear-btn" id="clearProd" onclick="clearInput('prodSearch')">✕</span>
       <div id="prodSug" class="suggestions"></div>
     </div>
-
     <div class="input-group">
       <svg class="search-icon" viewBox="0 0 24 24"><path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
       <input type="text" id="batchSearch" placeholder="Nhập số lô" autocomplete="off">
       <span class="clear-btn" id="clearBatch" onclick="clearInput('batchSearch')">✕</span>
       <div id="batchSug" class="suggestions"></div>
     </div>
-
     <button class="btn-reset" onclick="resetAll()">Xóa tất cả</button>
   </div>
-
   <div id="warehouseTabs" class="tab-container">
      <div class="tab active" onclick="selectWH('Tất cả')">Tất cả</div>
   </div>
@@ -171,29 +157,23 @@
   <div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>
 </div>
 
-<!-- =========================================
-     KHUNG GIAO DIỆN MODAL SƠ ĐỒ KHO
-     ========================================= -->
-<div id="mapModal" class="modal-overlay" onclick="closeMapModal()">
-  <div class="modal-content" onclick="event.stopPropagation()">
+<!-- MODAL SƠ ĐỒ KHO -->
+<div id="mapModal" class="modal-overlay">
+  <div class="modal-content">
     <div class="modal-header">
       <div class="modal-header-title">
         <span id="mapTitle">Sơ đồ kho</span>
-        <small>Dùng 2 ngón tay để phóng to</small>
+        <small>Dùng 2 ngón tay zoom, 1 ngón tay kéo</small>
       </div>
       <span class="close-modal" onclick="closeMapModal()">✕</span>
     </div>
-    <div class="modal-body">
-      <!-- Ảnh sơ đồ sẽ được gán vào đây -->
-      <img id="mapImage" class="modal-img" src="" alt="Đang tải ảnh...">
+    <div id="zoomContainer" class="modal-body">
+      <img id="mapImage" class="modal-img" src="" alt="Đang tải...">
     </div>
   </div>
 </div>
 
 <script>
-  // =========================================
-  // DÁN LINK ẢNH CỦA BẠN VÀO ĐÂY
-  // =========================================
   const MAP_IMAGES = {
     "1A": "images/kho1a.png",
     "3A": "images/kho3a.png",
@@ -205,7 +185,6 @@
     "6A": "images/kho6a.png",
     "6B": "images/kho6b.png"
   };
-  // =========================================
 
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbwFkON_Tpk_F08M8pnHWiAf-QVBjkv4wegUCyJBxuN1FNtUgNh8LktrkNumbBGNzkVb/exec';
   let allData = [];
@@ -228,13 +207,9 @@
   const clearBatch = document.getElementById('clearBatch');
 
   function resetAll() {
-    prodInput.value = "";
-    batchInput.value = "";
-    clearProd.style.display = 'none';
-    clearBatch.style.display = 'none';
-    currentProduct = "";
-    currentBatch = "";
-    currentWH = "Tất cả";
+    prodInput.value = ""; batchInput.value = "";
+    clearProd.style.display = 'none'; clearBatch.style.display = 'none';
+    currentProduct = ""; currentBatch = ""; currentWH = "Tất cả";
     document.getElementById('prodSug').style.display = 'none';
     document.getElementById('batchSug').style.display = 'none';
     document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
@@ -252,12 +227,9 @@
   };
 
   function selectProd(name) {
-    currentProduct = name;
-    prodInput.value = name;
-    clearProd.style.display = 'block';
-    document.getElementById('prodSug').style.display = 'none';
-    currentWH = "Tất cả";
-    updateUI();
+    currentProduct = name; prodInput.value = name;
+    clearProd.style.display = 'block'; document.getElementById('prodSug').style.display = 'none';
+    currentWH = "Tất cả"; updateUI();
   }
 
   batchInput.oninput = (e) => {
@@ -268,33 +240,23 @@
     const list = [...new Set(dataSource.map(i => i.So_Lo))].filter(b => String(b).toLowerCase().includes(val)).slice(0, 10);
     sugBox.innerHTML = list.map(b => `<div class="sug-item" onclick="selectBatch('${String(b).replace(/'/g, "\\'")}')">${b}</div>`).join('');
     sugBox.style.display = list.length ? 'block' : 'none';
-    currentBatch = val;
-    updateUI();
+    currentBatch = val; updateUI();
   };
 
   function selectBatch(batch) {
-    currentBatch = batch;
-    batchInput.value = batch;
-    clearBatch.style.display = 'block';
-    document.getElementById('batchSug').style.display = 'none';
+    currentBatch = batch; batchInput.value = batch;
+    clearBatch.style.display = 'block'; document.getElementById('batchSug').style.display = 'none';
     updateUI();
   }
 
   function clearInput(id) {
     document.getElementById(id).value = "";
-    if (id === 'prodSearch') {
-       currentProduct = "";
-       clearProd.style.display = 'none';
-    } else {
-       currentBatch = "";
-       clearBatch.style.display = 'none';
-    }
+    if (id === 'prodSearch') { currentProduct = ""; clearProd.style.display = 'none'; }
+    else { currentBatch = ""; clearBatch.style.display = 'none'; }
     if (!currentProduct && !currentBatch) {
        document.getElementById('resultArea').innerHTML = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
        document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
-    } else {
-       updateUI();
-    }
+    } else { updateUI(); }
   }
 
   function updateUI() {
@@ -305,23 +267,11 @@
 
     const warehouses = ["Tất cả", ...new Set(filtered.map(i => i.Ten_Kho))];
     const tabContainer = document.getElementById('warehouseTabs');
-    
-    // RENDER TABS VÀ TÍCH HỢP ICON BẢN ĐỒ
     tabContainer.innerHTML = warehouses.map(w => {
-      let wTrimmed = w.trim();
-      let whKey = wTrimmed.toUpperCase(); 
-      
-      let displayName = (wTrimmed === "Tất cả") ? "Tất cả" : (whKey === "CXL" ? "CXL" : `Kho ${wTrimmed}`);
-      
-      let mapIconHtml = "";
-      if (MAP_IMAGES[whKey]) {
-        mapIconHtml = `<span class="map-icon" onclick="openMapModal(event, '${whKey}')" title="Xem sơ đồ">🗺️</span>`;
-      }
-
-      return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')">
-                <span>${displayName}</span>
-                ${mapIconHtml}
-              </div>`
+      let whKey = w.trim().toUpperCase();
+      let displayName = (whKey === "TẤT CẢ") ? "Tất cả" : (whKey === "CXL" ? "CXL" : `Kho ${whKey}`);
+      let mapIconHtml = MAP_IMAGES[whKey] ? `<span class="map-icon" onclick="openMapModal(event, '${whKey}')">🗺️</span>` : "";
+      return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`
     }).join('');
 
     if (!warehouses.includes(currentWH)) currentWH = "Tất cả";
@@ -332,63 +282,94 @@
   function selectWH(wh) { currentWH = wh; updateUI(); }
 
   // =========================================
-  // LOGIC MỞ ĐÓNG MAP VÀ ĐIỀU KHIỂN ZOOM VIEWPORT
+  // BỘ ENGINE ZOOM & PAN NỘI BỘ (CHUYÊN NGHIỆP)
   // =========================================
-  const viewportMeta = document.getElementById('viewportMeta');
+  const modal = document.getElementById('mapModal');
+  const img = document.getElementById('mapImage');
+  const container = document.getElementById('zoomContainer');
+
+  let scale = 1, lastScale = 1;
+  let posX = 0, posY = 0, lastPosX = 0, lastPosY = 0;
+  let startX = 0, startY = 0;
+  let isDragging = false;
 
   function openMapModal(event, whKey) {
-    event.stopPropagation(); 
-    
-    // 1. MỞ KHÓA ZOOM (Cho phép user-scalable và max-scale = 5.0)
-    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
-    
-    const modal = document.getElementById('mapModal');
-    const img = document.getElementById('mapImage');
-    const title = document.getElementById('mapTitle');
-
-    title.textContent = `Sơ đồ Kho ${whKey}`;
-    img.src = MAP_IMAGES[whKey] || ""; 
+    event.stopPropagation();
+    document.getElementById('mapTitle').textContent = `Sơ đồ Kho ${whKey}`;
+    img.src = MAP_IMAGES[whKey];
     modal.style.display = 'flex';
+    resetZoom(); // Reset trạng thái ảnh mỗi khi mở
   }
 
   function closeMapModal() {
-    document.getElementById('mapModal').style.display = 'none';
-    document.getElementById('mapImage').src = ""; 
-    
-    // 2. KHÓA LẠI ZOOM & RESET VỀ 1.0 KHI ĐÓNG POPUP
-    // Cài maximum-scale=1.0 sẽ ép trình duyệt thu phóng về đúng kích thước mặc định ngay lập tức.
-    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+    modal.style.display = 'none';
+    img.src = "";
   }
-  // =========================================
 
+  function resetZoom() {
+    scale = 1; posX = 0; posY = 0;
+    updateTransform();
+  }
+
+  function updateTransform() {
+    img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  }
+
+  // Xử lý chạm 
+  container.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      isDragging = true;
+      startX = e.touches[0].clientX - posX;
+      startY = e.touches[0].clientY - posY;
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      lastScale = scale;
+      container.initialDistance = getDistance(e.touches);
+    }
+  });
+
+  container.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 1 && isDragging) {
+      posX = e.touches[0].clientX - startX;
+      posY = e.touches[0].clientY - startY;
+    } else if (e.touches.length === 2) {
+      const dist = getDistance(e.touches);
+      scale = Math.min(Math.max(1, lastScale * (dist / container.initialDistance)), 5);
+    }
+    updateTransform();
+  }, { passive: false });
+
+  container.addEventListener('touchend', () => {
+    isDragging = false;
+    lastScale = scale;
+  });
+
+  function getDistance(touches) {
+    return Math.hypot(touches[0].pageX - touches[1].pageX, touches[0].pageY - touches[1].pageY);
+  }
+
+  // Render cards
   function renderCards(data) {
     const area = document.getElementById('resultArea');
     if (data.length === 0) {
       area.innerHTML = '<center style="padding:20px; color:#666;">Không tìm thấy dữ liệu phù hợp</center>';
       return;
     }
-
     area.innerHTML = data.map(item => {
       let packStr = "";
       if (item.So_Luong_Goi_Thung && item.So_Luong_Goi_Thung !== "Chưa có") {
-        const q = parseInt(item.So_Luong_Goi_Thung);
-        const t = parseInt(item.Ton_HT);
-        const thung = Math.floor(t / q);
-        const le = t % q;
+        const q = parseInt(item.So_Luong_Goi_Thung), t = parseInt(item.Ton_HT);
+        const thung = Math.floor(t / q), le = t % q;
         packStr = thung > 0 ? `${thung} thùng` : "";
         if (le > 0) packStr += (packStr ? " + " : "") + `${le} hộp`;
       }
-
-      const displayQuyCach = `${item.Quy_Cach || ""} + Thùng ${item.So_Luong_Goi_Thung || "..."} hộp`;
-
       return `
         <div class="card">
           <div class="card-name">${item.Ten_SP || "--"}</div>
           <div class="card-row"><span class="label">Số lô:</span> <b>${item.So_Lo || "--"}</b></div>
           <div class="card-row"><span class="label">Hạn dùng:</span> <b>${item.Han_Dung || "--"}</b></div>
-          
-          <div class="card-row"><span class="label">Quy cách:</span> <b>${displayQuyCach || "--"}</b></div>
-          
+          <div class="card-row"><span class="label">Quy cách:</span> <b>${item.Quy_Cach || ""} + Thùng ${item.So_Luong_Goi_Thung || "..."} hộp</b></div>
           <div class="card-row"><span class="label">Số lượng:</span> <b>${item.Ton_HT ? item.Ton_HT.toLocaleString('vi-VN') : "--"}</b></div>
           ${packStr ? `<div class="calc-box">${packStr}</div>` : ''}
           <div class="pos-box">Vị trí: <b>${item.Vi_Tri || "--"}</b></div>
@@ -397,31 +378,14 @@
     }).join('');
   }
 
-  document.addEventListener('click', function(e) {
-    const prodSug = document.getElementById('prodSug');
-    const batchSug = document.getElementById('batchSug');
-    
-    if (e.target !== prodInput && !prodSug.contains(e.target)) {
-      prodSug.style.display = 'none';
-    }
-    
-    if (e.target !== batchInput && !batchSug.contains(e.target)) {
-      batchSug.style.display = 'none';
-    }
+  // Auto hide suggestions
+  document.addEventListener('click', e => {
+    if (e.target !== prodInput && !document.getElementById('prodSug').contains(e.target)) document.getElementById('prodSug').style.display = 'none';
+    if (e.target !== batchInput && !document.getElementById('batchSug').contains(e.target)) document.getElementById('batchSug').style.display = 'none';
   });
 
-  prodInput.addEventListener('focus', function() {
-    if (this.value.trim() && document.getElementById('prodSug').innerHTML !== "") {
-      document.getElementById('prodSug').style.display = 'block';
-    }
-  });
-
-  batchInput.addEventListener('focus', function() {
-    if (this.value.trim() && document.getElementById('batchSug').innerHTML !== "") {
-      document.getElementById('batchSug').style.display = 'block';
-    }
-  });
-
+  prodInput.addEventListener('focus', () => { if (prodInput.value.trim()) document.getElementById('prodSug').style.display = 'block'; });
+  batchInput.addEventListener('focus', () => { if (batchInput.value.trim()) document.getElementById('batchSug').style.display = 'block'; });
 </script>
 </body>
 </html>
