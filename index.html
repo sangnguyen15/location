@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Vị Trí Sản Phẩm">
-    <link rel="apple-touch-icon" href="https://img.freepik.com/premium-vector/flat-icon-map-location_67813-3402.jpg">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vị Trí Sản Phẩm">
+  <link rel="apple-touch-icon" href="https://img.freepik.com/premium-vector/flat-icon-map-location_67813-3402.jpg">
   <title>Vị Trí Sản Phẩm</title>
   <style>
     :root { --pharma-blue: #0056b3; --light-blue: #e7f1ff; --warn-orange: #fd7e14; --danger-red: #dc3545; }
@@ -64,11 +64,24 @@
     /* TABS */
     .tab-container { display: flex; overflow-x: auto; padding: 5px 10px 10px; gap: 8px; scrollbar-width: none; }
     .tab-container::-webkit-scrollbar { display: none; }
-    .tab { padding: 6px 15px; background: #e0e0e0; border-radius: 20px; white-space: nowrap; font-size: 14px; font-weight: 500; cursor: pointer; }
+    /* CẬP NHẬT CSS TAB: Thêm display flex để text và icon nằm ngang nhau đẹp hơn */
+    .tab { 
+      padding: 6px 15px; background: #e0e0e0; border-radius: 20px; white-space: nowrap; 
+      font-size: 14px; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
     .tab.active { background: var(--pharma-blue); color: white; }
+    
+    /* CSS ICON BẢN ĐỒ TRONG TAB */
+    .map-icon {
+      font-size: 14px; margin-left: 6px; padding: 2px 4px;
+      background: rgba(255, 255, 255, 0.4); border-radius: 4px;
+      transition: transform 0.1s;
+    }
+    .map-icon:active { transform: scale(0.9); }
+    .tab.active .map-icon { background: rgba(255, 255, 255, 0.2); }
 
     /* CONTENT AREA */
-    /* CẬP NHẬT: Thêm khoảng trống an toàn cho content để không bị che khuất */
     .content { margin-top: calc(240px + env(safe-area-inset-top)); padding: 15px; }
 
     .card {
@@ -81,6 +94,38 @@
     
     .calc-box { margin-top: 6px; background: var(--light-blue); color: var(--pharma-blue); padding: 6px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 14px; }
     .pos-box { margin-top: 8px; border: 1px solid var(--pharma-blue); color: var(--pharma-blue); padding: 6px; border-radius: 6px; text-align: center; font-size: 14px; background: white;}
+
+    /* =========================================
+       CSS MODAL (POPUP) HIỂN THỊ SƠ ĐỒ KHO
+       ========================================= */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75); z-index: 9999;
+      display: none; justify-content: center; align-items: center;
+      opacity: 0; animation: fadeIn 0.2s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .modal-content {
+      position: relative; width: 92%; max-width: 600px; max-height: 85vh;
+      background: white; border-radius: 12px; display: flex; flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden;
+    }
+    .modal-header {
+      padding: 12px 15px; background: var(--pharma-blue); color: white;
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: bold; font-size: 1.1rem;
+    }
+    .close-modal {
+      font-size: 20px; cursor: pointer; width: 30px; height: 30px;
+      display: flex; justify-content: center; align-items: center;
+      background: rgba(255,255,255,0.2); border-radius: 50%;
+    }
+    .close-modal:active { background: rgba(255,255,255,0.4); }
+    .modal-body {
+      padding: 10px; overflow: auto; -webkit-overflow-scrolling: touch;
+      display: flex; justify-content: center; align-items: center; background: #f9f9f9;
+    }
+    .modal-img { max-width: 100%; height: auto; border-radius: 6px; display: block; }
   </style>
 </head>
 <body>
@@ -106,8 +151,8 @@
     <button class="btn-reset" onclick="resetAll()">Xóa tất cả</button>
   </div>
 
-  <div id="warehouseTabs" class="tab-container" style="display:flex;">
-     <div class="tab active">Tất cả</div>
+  <div id="warehouseTabs" class="tab-container">
+     <div class="tab active" onclick="selectWH('Tất cả')">Tất cả</div>
   </div>
 </div>
 
@@ -115,7 +160,39 @@
   <div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>
 </div>
 
+<!-- =========================================
+     THÊM KHUNG GIAO DIỆN MODAL SƠ ĐỒ KHO
+     ========================================= -->
+<div id="mapModal" class="modal-overlay" onclick="closeMapModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span id="mapTitle">Sơ đồ kho</span>
+      <span class="close-modal" onclick="closeMapModal()">✕</span>
+    </div>
+    <div class="modal-body">
+      <!-- Ảnh sơ đồ sẽ được gán vào đây -->
+      <img id="mapImage" class="modal-img" src="" alt="Đang tải ảnh...">
+    </div>
+  </div>
+</div>
+
 <script>
+  // =========================================
+  // BẠN HÃY DÁN LINK ẢNH CỦA BẠN VÀO ĐÂY NHÉ
+  // =========================================
+  const MAP_IMAGES = {
+    "1A": "images/kho1a.png",
+    "3A": "images/kho3a.png",
+    "3B": "images/kho3b.png",
+    "4A": "images/kho4a.png",
+    "4B": "images/kho4b.png",
+    "5A": "images/kho5a.png",
+    "5B": "images/kho5b.png",
+    "6A": "images/kho6a.png",
+    "6B": "images/kho6b.png"
+  };
+  // =========================================
+
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbwFkON_Tpk_F08M8pnHWiAf-QVBjkv4wegUCyJBxuN1FNtUgNh8LktrkNumbBGNzkVb/exec';
   let allData = [];
   let currentProduct = "";
@@ -146,7 +223,7 @@
     currentWH = "Tất cả";
     document.getElementById('prodSug').style.display = 'none';
     document.getElementById('batchSug').style.display = 'none';
-    document.getElementById('warehouseTabs').innerHTML = '<div class="tab active">Tất cả</div>';
+    document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
     document.getElementById('resultArea').innerHTML = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
   }
 
@@ -200,7 +277,7 @@
     }
     if (!currentProduct && !currentBatch) {
        document.getElementById('resultArea').innerHTML = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
-       document.getElementById('warehouseTabs').innerHTML = '<div class="tab active">Tất cả</div>';
+       document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
     } else {
        updateUI();
     }
@@ -214,9 +291,24 @@
 
     const warehouses = ["Tất cả", ...new Set(filtered.map(i => i.Ten_Kho))];
     const tabContainer = document.getElementById('warehouseTabs');
+    
+    // RENDER TABS VÀ TÍCH HỢP ICON BẢN ĐỒ
     tabContainer.innerHTML = warehouses.map(w => {
-      let displayName = (w === "Tất cả") ? "Tất cả" : (w.toUpperCase() === "CXL" ? "CXL" : `Kho ${w}`);
-      return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')">${displayName}</div>`
+      let wTrimmed = w.trim();
+      let whKey = wTrimmed.toUpperCase(); // Xử lý đồng nhất tên để map với MAP_IMAGES (vd: "4B")
+      
+      let displayName = (wTrimmed === "Tất cả") ? "Tất cả" : (whKey === "CXL" ? "CXL" : `Kho ${wTrimmed}`);
+      
+      // Kiểm tra xem kho có nằm trong danh sách 9 kho không để gắp icon 🗺️
+      let mapIconHtml = "";
+      if (MAP_IMAGES[whKey]) {
+        mapIconHtml = `<span class="map-icon" onclick="openMapModal(event, '${whKey}')" title="Xem sơ đồ">🗺️</span>`;
+      }
+
+      return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')">
+                <span>${displayName}</span>
+                ${mapIconHtml}
+              </div>`
     }).join('');
 
     if (!warehouses.includes(currentWH)) currentWH = "Tất cả";
@@ -226,7 +318,27 @@
 
   function selectWH(wh) { currentWH = wh; updateUI(); }
 
-  // HÀM RENDER CARD ĐÃ CẬP NHẬT HIỂN THỊ QUY CÁCH KẾT HỢP
+  // =========================================
+  // CÁC HÀM XỬ LÝ MỞ / ĐÓNG MODAL SƠ ĐỒ KHO
+  // =========================================
+  function openMapModal(event, whKey) {
+    event.stopPropagation(); // Ngăn việc bấm vào icon làm kích hoạt việc chọn tab
+    const modal = document.getElementById('mapModal');
+    const img = document.getElementById('mapImage');
+    const title = document.getElementById('mapTitle');
+
+    title.textContent = `Sơ đồ Kho ${whKey}`;
+    // Lấy link ảnh từ cấu hình, nếu quên chưa điền link sẽ báo lỗi ảnh nhẹ
+    img.src = MAP_IMAGES[whKey] || ""; 
+    modal.style.display = 'flex';
+  }
+
+  function closeMapModal() {
+    document.getElementById('mapModal').style.display = 'none';
+    document.getElementById('mapImage').src = ""; // Clear source để lần sau mở kho khác không bị chớp ảnh cũ
+  }
+  // =========================================
+
   function renderCards(data) {
     const area = document.getElementById('resultArea');
     if (data.length === 0) {
@@ -236,7 +348,6 @@
 
     area.innerHTML = data.map(item => {
       let packStr = "";
-      // Sử dụng So_Luong_Goi_Thung để tính toán số thùng/hộp lẻ
       if (item.So_Luong_Goi_Thung && item.So_Luong_Goi_Thung !== "Chưa có") {
         const q = parseInt(item.So_Luong_Goi_Thung);
         const t = parseInt(item.Ton_HT);
@@ -246,7 +357,6 @@
         if (le > 0) packStr += (packStr ? " + " : "") + `${le} hộp`;
       }
 
-      // HIỂN THỊ QUY CÁCH KẾT HỢP
       const displayQuyCach = `${item.Quy_Cach || ""} + Thùng ${item.So_Luong_Goi_Thung || "..."} hộp`;
 
       return `
@@ -265,25 +375,19 @@
     }).join('');
   }
 
-  // ==========================================
-  // CẬP NHẬT MỚI: ẨN GỢI Ý KHI CLICK RA NGOÀI
-  // ==========================================
   document.addEventListener('click', function(e) {
     const prodSug = document.getElementById('prodSug');
     const batchSug = document.getElementById('batchSug');
     
-    // Kiểm tra nếu click không rơi vào ô nhập liệu sản phẩm và cũng không rơi vào bảng gợi ý sản phẩm
     if (e.target !== prodInput && !prodSug.contains(e.target)) {
       prodSug.style.display = 'none';
     }
     
-    // Kiểm tra nếu click không rơi vào ô nhập liệu số lô và cũng không rơi vào bảng gợi ý số lô
     if (e.target !== batchInput && !batchSug.contains(e.target)) {
       batchSug.style.display = 'none';
     }
   });
 
-  // Mở lại gợi ý nếu click (focus) lại vào ô nhập liệu khi đã có chữ
   prodInput.addEventListener('focus', function() {
     if (this.value.trim() && document.getElementById('prodSug').innerHTML !== "") {
       document.getElementById('prodSug').style.display = 'block';
