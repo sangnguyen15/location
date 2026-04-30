@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Vị Trí Sản Phẩm">
@@ -18,7 +18,18 @@
       background: white; z-index: 1000;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    .app-title { background: var(--pharma-blue); color: white; padding: 10px; text-align: center; font-weight: bold; font-size: 1.1rem; }
+    
+    /* CẬP NHẬT: Thêm env(safe-area-inset-top) để đẩy header xuống dưới thanh pin/giờ */
+    .app-title { 
+      background: var(--pharma-blue); 
+      color: white; 
+      padding: 10px; 
+      padding-top: calc(10px + env(safe-area-inset-top)); 
+      text-align: center; 
+      font-weight: bold; 
+      font-size: 1.1rem; 
+    }
+    
     .search-area { padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; }
     
     .input-group { position: relative; display: flex; align-items: center; }
@@ -57,7 +68,8 @@
     .tab.active { background: var(--pharma-blue); color: white; }
 
     /* CONTENT AREA */
-    .content { margin-top: 240px; padding: 15px; }
+    /* CẬP NHẬT: Thêm khoảng trống an toàn cho content để không bị che khuất */
+    .content { margin-top: calc(240px + env(safe-area-inset-top)); padding: 15px; }
 
     .card {
       background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px;
@@ -235,25 +247,55 @@
       }
 
       // HIỂN THỊ QUY CÁCH KẾT HỢP
-      // item.Quy_Cach lấy từ sheet Du_Lieu (ví dụ: H/60v)
-      // item.So_Luong_Goi_Thung lấy từ sheet Quy_Cach (ví dụ: 680)
       const displayQuyCach = `${item.Quy_Cach || ""} + Thùng ${item.So_Luong_Goi_Thung || "..."} hộp`;
 
       return `
         <div class="card">
-          <div class="card-name">${item.Ten_SP}</div>
-          <div class="card-row"><span class="label">Số lô:</span> <b>${item.So_Lo}</b></div>
-          <div class="card-row"><span class="label">Hạn dùng:</span> <b>${item.Han_Dung}</b></div>
+          <div class="card-name">${item.Ten_SP || "--"}</div>
+          <div class="card-row"><span class="label">Số lô:</span> <b>${item.So_Lo || "--"}</b></div>
+          <div class="card-row"><span class="label">Hạn dùng:</span> <b>${item.Han_Dung || "--"}</b></div>
           
-          <div class="card-row"><span class="label">Quy cách:</span> <b>${displayQuyCach}</b></div>
+          <div class="card-row"><span class="label">Quy cách:</span> <b>${displayQuyCach || "--"}</b></div>
           
-          <div class="card-row"><span class="label">Số lượng:</span> <b>${item.Ton_HT.toLocaleString('vi-VN')}</b></div>
+          <div class="card-row"><span class="label">Số lượng:</span> <b>${item.Ton_HT ? item.Ton_HT.toLocaleString('vi-VN') : "--"}</b></div>
           ${packStr ? `<div class="calc-box">${packStr}</div>` : ''}
-          <div class="pos-box">Vị trí: <b>${item.Vi_Tri}</b></div>
+          <div class="pos-box">Vị trí: <b>${item.Vi_Tri || "--"}</b></div>
         </div>
       `;
     }).join('');
   }
+
+  // ==========================================
+  // CẬP NHẬT MỚI: ẨN GỢI Ý KHI CLICK RA NGOÀI
+  // ==========================================
+  document.addEventListener('click', function(e) {
+    const prodSug = document.getElementById('prodSug');
+    const batchSug = document.getElementById('batchSug');
+    
+    // Kiểm tra nếu click không rơi vào ô nhập liệu sản phẩm và cũng không rơi vào bảng gợi ý sản phẩm
+    if (e.target !== prodInput && !prodSug.contains(e.target)) {
+      prodSug.style.display = 'none';
+    }
+    
+    // Kiểm tra nếu click không rơi vào ô nhập liệu số lô và cũng không rơi vào bảng gợi ý số lô
+    if (e.target !== batchInput && !batchSug.contains(e.target)) {
+      batchSug.style.display = 'none';
+    }
+  });
+
+  // Mở lại gợi ý nếu click (focus) lại vào ô nhập liệu khi đã có chữ
+  prodInput.addEventListener('focus', function() {
+    if (this.value.trim() && document.getElementById('prodSug').innerHTML !== "") {
+      document.getElementById('prodSug').style.display = 'block';
+    }
+  });
+
+  batchInput.addEventListener('focus', function() {
+    if (this.value.trim() && document.getElementById('batchSug').innerHTML !== "") {
+      document.getElementById('batchSug').style.display = 'block';
+    }
+  });
+
 </script>
 </body>
 </html>
