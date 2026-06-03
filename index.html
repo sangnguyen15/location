@@ -677,24 +677,55 @@
   }
 
   function updateUI() {
-    if (!currentProduct && !currentBatch) return;
-    let filtered = allData;
-    if (currentProduct) filtered = filtered.filter(i => i.Ten_SP === currentProduct);
-    if (currentBatch) filtered = filtered.filter(i => String(i.So_Lo).toLowerCase().includes(currentBatch.toLowerCase()));
+  if (!currentProduct && !currentBatch) return;
+  let filtered = allData;
+  if (currentProduct) filtered = filtered.filter(i => i.Ten_SP === currentProduct);
+  if (currentBatch) filtered = filtered.filter(i => String(i.So_Lo).toLowerCase().includes(currentBatch.toLowerCase()));
 
-    const warehouses = ["Tất cả", ...new Set(filtered.map(i => i.Ten_Kho))];
-    const tabContainer = document.getElementById('warehouseTabs');
-    tabContainer.innerHTML = warehouses.map(w => {
-      let whKey = w.trim().toUpperCase();
-      let displayName = (whKey === "TẤT CẢ") ? "Tất cả" : (whKey === "CXL" ? "CXL" : `Kho ${whKey}`);
-      let mapIconHtml = MAP_IMAGES[whKey] ? `<span class="map-icon" onclick="openMapModal(event, '${whKey}')">🗺️</span>` : "";
-      return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`;
-    }).join('');
+  // ---- ĐOẠN SỬA ĐỔI CHUẨN HÓA DANH SÁCH 10 KHO HỢP LỆ ----
+  const ALLOWED_KHOS = [
+    "VI_TRI_DB", "1A", "3A", "3B", "4A", "4B", "5A", "5B", "6A", "6B"
+  ];
 
-    if (!warehouses.includes(currentWH)) currentWH = "Tất cả";
-    if (currentWH !== "Tất cả") filtered = filtered.filter(i => i.Ten_Kho === currentWH);
-    renderCards(filtered);
+  // Thu thập các kho từ dữ liệu tìm kiếm, nhưng bắt buộc phải nằm trong danh sách 10 kho được phép
+  const rawWarehouses = filtered.map(i => {
+    let wh = String(i.Ten_Kho || "").trim().toUpperCase();
+    return wh;
+  });
+
+  // Chỉ lọc lấy các kho hợp lệ và loại bỏ trùng lặp
+  const validWHs = [...new Set(rawWarehouses)].filter(w => ALLOWED_KHOS.includes(w));
+
+  // Tạo danh sách tab bắt đầu bằng "Tất cả", sau đó đến các kho hợp lệ tìm được
+  const warehouses = ["Tất cả", ...validWHs];
+  
+  // Sắp xếp các tab kho theo thứ tự chữ cái để giao diện gọn gàng (trừ "Tất cả")
+  const subWHs = warehouses.slice(1).sort();
+  const finalWarehouses = ["Tất cả", ...subWHs];
+
+  const tabContainer = document.getElementById('warehouseTabs');
+  tabContainer.innerHTML = finalWarehouses.map(w => {
+    let whKey = w.trim().toUpperCase();
+    let displayName = "";
+    
+    if (whKey === "TẤT CẢ") {
+      displayName = "Tất cả";
+    } else if (whKey === "VI_TRI_DB") {
+      displayName = "Vi_Tri_DB";
+    } else {
+      displayName = `Kho ${w}`;
+    }
+
+    let mapIconHtml = MAP_IMAGES[w] ? `<span class="map-icon" onclick="openMapModal(event, '${w}')">🗺️</span>` : "";
+    return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`;
+  }).join('');
+
+  if (!finalWarehouses.includes(currentWH)) currentWH = "Tất cả";
+  if (currentWH !== "Tất cả") {
+    filtered = filtered.filter(i => String(i.Ten_Kho).toLowerCase() === currentWH.toLowerCase());
   }
+  renderCards(filtered);
+}
 
   function selectWH(wh) { currentWH = wh; updateUI(); }
 
