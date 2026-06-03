@@ -682,48 +682,43 @@
   if (currentProduct) filtered = filtered.filter(i => i.Ten_SP === currentProduct);
   if (currentBatch) filtered = filtered.filter(i => String(i.So_Lo).toLowerCase().includes(currentBatch.toLowerCase()));
 
-  // ---- ĐOẠN SỬA ĐỔI CHUẨN HÓA DANH SÁCH 10 KHO HỢP LỆ ----
-  const ALLOWED_KHOS = [
-    "VI_TRI_DB", "1A", "3A", "3B", "4A", "4B", "5A", "5B", "6A", "6B"
-  ];
+  // DANH SÁCH 10 KHO ĐƯỢC PHÉP HIỂN THỊ TAB (Không hiển thị kho "Khác")
+  const ALLOWED_KHOS = ["Vi_Tri_DB", "1A", "3A", "3B", "4A", "4B", "5A", "5B", "6A", "6B"];
 
-  // Thu thập các kho từ dữ liệu tìm kiếm, nhưng bắt buộc phải nằm trong danh sách 10 kho được phép
-  const rawWarehouses = filtered.map(i => {
-    let wh = String(i.Ten_Kho || "").trim().toUpperCase();
-    return wh;
-  });
+  // Lấy các kho xuất hiện từ kết quả tìm kiếm, loại bỏ trùng lặp và bắt buộc phải nằm trong 10 kho chuẩn
+  const rawWarehouses = filtered.map(i => String(i.Ten_Kho || "").trim());
+  const validWHs = [...new Set(rawWarehouses)].filter(w => ALLOWED_KHOS.map(a => a.toLowerCase()).includes(w.toLowerCase()));
 
-  // Chỉ lọc lấy các kho hợp lệ và loại bỏ trùng lặp
-  const validWHs = [...new Set(rawWarehouses)].filter(w => ALLOWED_KHOS.includes(w));
+  // Chuyển đổi về đúng định dạng chữ chuẩn để hiển thị đẹp mắt
+  const finalWHs = ALLOWED_KHOS.filter(a => validWHs.map(v => v.toLowerCase()).includes(a.toLowerCase()));
 
-  // Tạo danh sách tab bắt đầu bằng "Tất cả", sau đó đến các kho hợp lệ tìm được
-  const warehouses = ["Tất cả", ...validWHs];
+  // Thêm tab "Tất cả" vào đầu dải Tab
+  const warehouses = ["Tất cả", ...finalWHs];
   
-  // Sắp xếp các tab kho theo thứ tự chữ cái để giao diện gọn gàng (trừ "Tất cả")
-  const subWHs = warehouses.slice(1).sort();
-  const finalWarehouses = ["Tất cả", ...subWHs];
-
   const tabContainer = document.getElementById('warehouseTabs');
-  tabContainer.innerHTML = finalWarehouses.map(w => {
-    let whKey = w.trim().toUpperCase();
-    let displayName = "";
-    
-    if (whKey === "TẤT CẢ") {
-      displayName = "Tất cả";
-    } else if (whKey === "VI_TRI_DB") {
-      displayName = "Vi_Tri_DB";
-    } else {
+  tabContainer.innerHTML = warehouses.map(w => {
+    let displayName = w;
+    if (w !== "Tất cả" && w !== "Vi_Tri_DB") {
       displayName = `Kho ${w}`;
     }
-
-    let mapIconHtml = MAP_IMAGES[w] ? `<span class="map-icon" onclick="openMapModal(event, '${w}')">🗺️</span>` : "";
-    return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`;
+    
+    // Tạo Icon bản đồ dựa trên mã Key dạng chữ Hoa
+    let mapKey = w.toUpperCase();
+    let mapIconHtml = MAP_IMAGES[mapKey] ? `<span class="map-icon" onclick="openMapModal(event, '${mapKey}')">🗺️</span>` : "";
+    
+    return `<div class="tab ${w.toLowerCase() === currentWH.toLowerCase() ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`;
   }).join('');
 
-  if (!finalWarehouses.includes(currentWH)) currentWH = "Tất cả";
+  // Nếu Tab đang chọn bỗng dưng không có trong danh sách tìm kiếm nữa thì đưa về mặc định "Tất cả"
+  if (!warehouses.map(w => w.toLowerCase()).includes(currentWH.toLowerCase())) {
+    currentWH = "Tất cả";
+  }
+
+  // Tiến hành lọc dữ liệu hiển thị xuống các Card
   if (currentWH !== "Tất cả") {
     filtered = filtered.filter(i => String(i.Ten_Kho).toLowerCase() === currentWH.toLowerCase());
   }
+  
   renderCards(filtered);
 }
 
