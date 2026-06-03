@@ -9,31 +9,40 @@
   <link rel="apple-touch-icon" href="https://img.freepik.com/premium-vector/flat-icon-map-location_67813-3402.jpg">
   <title>Vị Trí Sản Phẩm</title>
   <style>
-    :root { --pharma-blue: #0056b3; --light-blue: #e7f1ff; --warn-orange: #fd7e14; --danger-red: #dc3545; }
+    :root {
+      --pharma-blue: #0056b3;
+      --light-blue: #e7f1ff;
+      --warn-orange: #fd7e14;
+      --danger-red: #dc3545;
+      --success-green: #28a745;
+      --empty-gray: #6c757d;
+    }
     body { font-family: -apple-system, sans-serif; margin: 0; background: #f0f2f5; color: #333; touch-action: manipulation; overflow-x: hidden; }
 
-    /* FIXED HEADER */
+    /* =========================================
+       FIXED HEADER
+       ========================================= */
     .fixed-header {
       position: fixed; top: 0; width: 100%;
       background: white; z-index: 1000;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    
-    .app-title { 
-      background: var(--pharma-blue); 
-      color: white; 
-      padding: 10px; 
-      padding-top: calc(10px + env(safe-area-inset-top)); 
-      text-align: center; 
-      font-weight: bold; 
-      font-size: 1.1rem; 
+
+    .app-title {
+      background: var(--pharma-blue);
+      color: white;
+      padding: 10px;
+      padding-top: calc(10px + env(safe-area-inset-top));
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
     }
-    
+
     .search-area { padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; }
-    
+
     .input-group { position: relative; display: flex; align-items: center; }
     .search-icon { position: absolute; left: 12px; fill: #999; width: 18px; height: 18px; }
-    
+
     input {
       width: 100%; padding: 10px 10px 10px 38px; border: 1px solid #ccc;
       border-radius: 8px; font-size: 16px; outline: none; box-sizing: border-box;
@@ -50,7 +59,7 @@
       box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
     }
     .btn-reset:active { opacity: 0.8; }
-    
+
     .suggestions {
       position: absolute; top: 45px; width: 100%; background: white;
       border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -58,22 +67,111 @@
     }
     .sug-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 15px; cursor: pointer;}
 
+    /* =========================================
+       KHO STATS SECTION (MỚI - giữa nút reset và tab kho)
+       ========================================= */
+    .kho-stats-section {
+      padding: 8px 12px 4px;
+      border-top: 1px solid #eee;
+    }
+
+    .kho-stats-title {
+      font-size: 11px;
+      color: #999;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .kho-stats-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 6px;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .kho-stats-row::-webkit-scrollbar { display: none; }
+
+    /* Card kho nhỏ */
+    .kho-stat-card {
+      flex-shrink: 0;
+      background: white;
+      border: 1.5px solid #e0e8f5;
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      text-align: center;
+      min-width: 64px;
+      transition: all 0.15s;
+      box-shadow: 0 1px 3px rgba(0,86,179,0.07);
+    }
+    .kho-stat-card:active { transform: scale(0.96); background: var(--light-blue); }
+
+    .kho-stat-card .kho-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--pharma-blue);
+      margin-bottom: 3px;
+    }
+
+    .kho-stat-card .kho-ratio {
+      font-size: 13px;
+      font-weight: 800;
+      color: #333;
+    }
+
+    /* Thanh progress nhỏ */
+    .kho-stat-card .kho-bar {
+      height: 4px;
+      background: #e9ecef;
+      border-radius: 2px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .kho-stat-card .kho-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--pharma-blue);
+      transition: width 0.4s ease;
+    }
+
+    /* Màu thanh theo % sử dụng */
+    .kho-stat-card.high .kho-bar-fill { background: var(--danger-red); }
+    .kho-stat-card.med  .kho-bar-fill { background: var(--warn-orange); }
+    .kho-stat-card.low  .kho-bar-fill { background: var(--success-green); }
+
+    /* Trạng thái loading */
+    .kho-stats-loading {
+      font-size: 12px;
+      color: #aaa;
+      padding: 4px 0 8px;
+      text-align: center;
+    }
+
+    /* =========================================
+       TAB KHO (giữ nguyên)
+       ========================================= */
     .tab-container { display: flex; overflow-x: auto; padding: 5px 10px 10px; gap: 8px; scrollbar-width: none; }
     .tab-container::-webkit-scrollbar { display: none; }
-    .tab { 
-      padding: 6px 15px; background: #e0e0e0; border-radius: 20px; white-space: nowrap; 
+    .tab {
+      padding: 6px 15px; background: #e0e0e0; border-radius: 20px; white-space: nowrap;
       font-size: 14px; font-weight: 500; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
     }
     .tab.active { background: var(--pharma-blue); color: white; }
-    
+
     .map-icon {
       font-size: 14px; margin-left: 6px; padding: 2px 4px;
       background: rgba(255, 255, 255, 0.4); border-radius: 4px;
     }
     .tab.active .map-icon { background: rgba(255, 255, 255, 0.2); }
 
-    .content { margin-top: calc(240px + env(safe-area-inset-top)); padding: 15px; }
+    /* =========================================
+       CONTENT
+       ========================================= */
+    /* Tăng margin-top vì header cao hơn (thêm kho stats) */
+    .content { margin-top: calc(310px + env(safe-area-inset-top)); padding: 15px; }
 
     .card {
       background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px;
@@ -82,12 +180,12 @@
     .card-name { font-weight: bold; color: var(--pharma-blue); font-size: 1rem; margin-bottom: 8px; line-height: 1.3; border-bottom: 1px dashed #eee; padding-bottom: 5px;}
     .card-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px; align-items: center;}
     .label { color: #666; }
-    
+
     .calc-box { margin-top: 6px; background: var(--light-blue); color: var(--pharma-blue); padding: 6px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 14px; }
     .pos-box { margin-top: 8px; border: 1px solid var(--pharma-blue); color: var(--pharma-blue); padding: 6px; border-radius: 6px; text-align: center; font-size: 14px; background: white;}
 
     /* =========================================
-       POPUP SƠ ĐỒ KHO (CHUYÊN NGHIỆP)
+       POPUP SƠ ĐỒ KHO (giữ nguyên)
        ========================================= */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -95,37 +193,157 @@
       display: none; justify-content: center; align-items: center;
     }
     .modal-content {
-      position: relative; width: 100%; height: 100%; 
+      position: relative; width: 100%; height: 100%;
       display: flex; flex-direction: column; overflow: hidden;
     }
     .modal-header {
-      padding: 15px; color: white; display: flex; 
+      padding: 15px; color: white; display: flex;
       justify-content: space-between; align-items: center;
       background: rgba(0,0,0,0.5); z-index: 10;
       padding-top: calc(15px + env(safe-area-inset-top));
     }
     .modal-header-title span { font-weight: bold; font-size: 1.2rem; }
     .modal-header-title small { display: block; font-size: 0.8rem; opacity: 0.8; }
-    
     .close-modal {
       font-size: 28px; cursor: pointer; width: 44px; height: 44px;
       display: flex; justify-content: center; align-items: center;
     }
-
-    /* VÙNG CHỨA ẢNH - CHẶN CẮT CÁC PHẦN TRÀN RA NGOÀI */
     .modal-body {
       flex: 1; position: relative; overflow: hidden;
       display: flex; justify-content: center; align-items: center;
-      touch-action: none; /* Quan trọng: Tắt mặc định để JS xử lý zoom */
+      touch-action: none;
     }
-
-    /* ẢNH SƠ ĐỒ */
-    .modal-img { 
+    .modal-img {
       max-width: 100%; max-height: 100%;
-      transition: transform 0.1s ease-out; /* Tạo độ mượt khi zoom */
+      transition: transform 0.1s ease-out;
       will-change: transform;
       user-select: none;
       -webkit-user-drag: none;
+    }
+
+    /* =========================================
+       POPUP THỐNG KÊ VỊ TRÍ (MỚI)
+       ========================================= */
+    .vitri-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 9998;
+      display: none; justify-content: center; align-items: flex-end;
+    }
+    .vitri-modal-overlay.open { display: flex; }
+
+    .vitri-modal-sheet {
+      background: white;
+      width: 100%;
+      max-height: 85vh;
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding-bottom: env(safe-area-inset-bottom);
+      animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+
+    .vitri-modal-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-shrink: 0;
+    }
+
+    .vitri-modal-header-info h3 {
+      margin: 0 0 4px;
+      font-size: 1.1rem;
+      color: var(--pharma-blue);
+    }
+
+    .vitri-modal-summary {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .badge-used {
+      background: #fff3cd; color: #856404;
+      padding: 2px 8px; border-radius: 10px; font-weight: 600;
+    }
+    .badge-empty {
+      background: #d1e7dd; color: #0f5132;
+      padding: 2px 8px; border-radius: 10px; font-weight: 600;
+    }
+    .badge-total {
+      background: #e7f1ff; color: var(--pharma-blue);
+      padding: 2px 8px; border-radius: 10px; font-weight: 600;
+    }
+
+    .vitri-close-btn {
+      font-size: 24px; cursor: pointer; color: #666;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: #f0f2f5;
+      flex-shrink: 0;
+    }
+
+    /* Tab bộ lọc trong popup */
+    .vitri-filter-tabs {
+      display: flex;
+      padding: 10px 15px;
+      gap: 8px;
+      border-bottom: 1px solid #f0f0f0;
+      flex-shrink: 0;
+    }
+
+    .vitri-filter-tab {
+      flex: 1; padding: 8px; border-radius: 8px;
+      text-align: center; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid #e0e0e0;
+      color: #666; background: white;
+    }
+    .vitri-filter-tab.active-all   { border-color: var(--pharma-blue); background: var(--pharma-blue); color: white; }
+    .vitri-filter-tab.active-used  { border-color: var(--warn-orange); background: #fff8f0; color: #c85a00; }
+    .vitri-filter-tab.active-empty { border-color: var(--success-green); background: #f0fff4; color: #1a6b30; }
+
+    /* Lưới mã vị trí */
+    .vitri-grid {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 15px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      align-content: start;
+    }
+
+    .vitri-chip {
+      padding: 8px 5px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1.5px solid;
+      line-height: 1.2;
+    }
+
+    .vitri-chip.used {
+      background: #fff8f0;
+      border-color: var(--warn-orange);
+      color: #c85a00;
+    }
+    .vitri-chip.empty {
+      background: #f0fff4;
+      border-color: #a3d9b1;
+      color: #1a6b30;
+    }
+    .vitri-chip .chip-icon {
+      font-size: 10px;
+      display: block;
+      margin-bottom: 2px;
     }
   </style>
 </head>
@@ -133,6 +351,7 @@
 
 <div class="fixed-header">
   <div class="app-title">Location Map</div>
+
   <div class="search-area">
     <div class="input-group">
       <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -148,8 +367,20 @@
     </div>
     <button class="btn-reset" onclick="resetAll()">Xóa tất cả</button>
   </div>
+
+  <!-- =============================================
+       KHO STATS SECTION — Hiển thị tất cả các kho
+       ============================================= -->
+  <div class="kho-stats-section">
+    <div class="kho-stats-title">Tình trạng sử dụng vị trí</div>
+    <div class="kho-stats-row" id="khoStatsRow">
+      <div class="kho-stats-loading">Đang tải dữ liệu kho...</div>
+    </div>
+  </div>
+
+  <!-- Tab kho (giữ nguyên) -->
   <div id="warehouseTabs" class="tab-container">
-     <div class="tab active" onclick="selectWH('Tất cả')">Tất cả</div>
+    <div class="tab active" onclick="selectWH('Tất cả')">Tất cả</div>
   </div>
 </div>
 
@@ -157,7 +388,7 @@
   <div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>
 </div>
 
-<!-- MODAL SƠ ĐỒ KHO -->
+<!-- MODAL SƠ ĐỒ KHO (giữ nguyên) -->
 <div id="mapModal" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-header">
@@ -170,6 +401,34 @@
     <div id="zoomContainer" class="modal-body">
       <img id="mapImage" class="modal-img" src="" alt="Đang tải...">
     </div>
+  </div>
+</div>
+
+<!-- MODAL THỐNG KÊ VỊ TRÍ (MỚI) -->
+<div id="vitriModal" class="vitri-modal-overlay" onclick="handleVitriOverlayClick(event)">
+  <div class="vitri-modal-sheet" onclick="event.stopPropagation()">
+    <!-- Header -->
+    <div class="vitri-modal-header">
+      <div class="vitri-modal-header-info">
+        <h3 id="vitriModalTitle">Kho 3A</h3>
+        <div class="vitri-modal-summary">
+          <span class="badge-used" id="vitriUsedBadge">🟡 0 đã dùng</span>
+          <span class="badge-empty" id="vitriEmptyBadge">🟢 0 trống</span>
+          <span class="badge-total" id="vitriTotalBadge">📦 0 tổng</span>
+        </div>
+      </div>
+      <div class="vitri-close-btn" onclick="closeVitriModal()">✕</div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="vitri-filter-tabs">
+      <div class="vitri-filter-tab active-all" id="ftab-all" onclick="setVitriFilter('all')">Tất cả</div>
+      <div class="vitri-filter-tab" id="ftab-used" onclick="setVitriFilter('used')">🟡 Đã dùng</div>
+      <div class="vitri-filter-tab" id="ftab-empty" onclick="setVitriFilter('empty')">🟢 Còn trống</div>
+    </div>
+
+    <!-- Grid vị trí -->
+    <div class="vitri-grid" id="vitriGrid"></div>
   </div>
 </div>
 
@@ -186,24 +445,184 @@
     "6B": "images/kho6b.png"
   };
 
+  // ⚠️ Thay bằng URL deploy của bạn
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbwFkON_Tpk_F08M8pnHWiAf-QVBjkv4wegUCyJBxuN1FNtUgNh8LktrkNumbBGNzkVb/exec';
+
   let allData = [];
+  let viTriStats = {};   // { "3A": { total, usedCount, allSlots[], usedSlots[] }, ... }
   let currentProduct = "";
   let currentBatch = "";
   let currentWH = "Tất cả";
 
+  // Trạng thái popup vị trí
+  let currentVitriKho = null;
+  let currentVitriFilter = 'all';
+
+  // =============================================
+  // KHỞI ĐỘNG: Gọi 2 API song song
+  // =============================================
   window.onload = () => {
+    // Dùng cache tức thì nếu có
     const cached = localStorage.getItem('pharma_cache');
     if (cached) { allData = JSON.parse(cached); }
-    fetch(GAS_URL).then(r => r.json()).then(d => {
-      allData = d;
-      localStorage.setItem('pharma_cache', JSON.stringify(d));
+
+    const vtCached = localStorage.getItem('vitri_stats_cache');
+    if (vtCached) {
+      viTriStats = JSON.parse(vtCached);
+      renderKhoStats();
+    }
+
+    // Gọi 2 API song song
+    Promise.all([
+      fetch(GAS_URL).then(r => r.json()),
+      fetch(GAS_URL + '?type=vitri').then(r => r.json())
+    ]).then(([inventoryData, vtData]) => {
+      allData = inventoryData;
+      viTriStats = vtData;
+      localStorage.setItem('pharma_cache', JSON.stringify(inventoryData));
+      localStorage.setItem('vitri_stats_cache', JSON.stringify(vtData));
+      renderKhoStats();
+    }).catch(err => {
+      console.warn('Lỗi fetch:', err);
+      // Đã có cache, vẫn render được
+      if (!Object.keys(viTriStats).length) {
+        document.getElementById('khoStatsRow').innerHTML =
+          '<div class="kho-stats-loading">⚠️ Không tải được dữ liệu</div>';
+      }
     });
   };
 
-  const prodInput = document.getElementById('prodSearch');
+  // =============================================
+  // RENDER DẢI CARD KHO STATS
+  // =============================================
+  function renderKhoStats() {
+    const row = document.getElementById('khoStatsRow');
+    const keys = Object.keys(viTriStats);
+
+    if (!keys.length) {
+      row.innerHTML = '<div class="kho-stats-loading">Không có dữ liệu</div>';
+      return;
+    }
+
+    // Sắp xếp theo tên kho
+    keys.sort();
+
+    row.innerHTML = keys.map(khoKey => {
+      const d = viTriStats[khoKey];
+      const used = d.usedCount || 0;
+      const total = d.total || 0;
+      const pct = total > 0 ? Math.round((used / total) * 100) : 0;
+
+      // Màu theo mức độ sử dụng
+      let colorClass = 'low';   // < 50%
+      if (pct >= 80) colorClass = 'high';
+      else if (pct >= 50) colorClass = 'med';
+
+      return `
+        <div class="kho-stat-card ${colorClass}" onclick="openVitriModal('${khoKey}')">
+          <div class="kho-name">Kho ${khoKey}</div>
+          <div class="kho-ratio">${used}/${total}</div>
+          <div class="kho-bar">
+            <div class="kho-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // =============================================
+  // POPUP THỐNG KÊ VỊ TRÍ
+  // =============================================
+  function openVitriModal(khoKey) {
+    currentVitriKho = khoKey;
+    currentVitriFilter = 'all';
+
+    const d = viTriStats[khoKey];
+    if (!d) return;
+
+    const used  = d.usedCount || 0;
+    const total = d.total || 0;
+    const empty = total - used;
+
+    // Cập nhật header
+    document.getElementById('vitriModalTitle').textContent = `Kho ${khoKey}`;
+    document.getElementById('vitriUsedBadge').textContent  = `🟡 ${used} đã dùng`;
+    document.getElementById('vitriEmptyBadge').textContent = `🟢 ${empty} trống`;
+    document.getElementById('vitriTotalBadge').textContent = `📦 ${total} tổng`;
+
+    // Reset filter tabs
+    document.getElementById('ftab-all').className   = 'vitri-filter-tab active-all';
+    document.getElementById('ftab-used').className  = 'vitri-filter-tab';
+    document.getElementById('ftab-empty').className = 'vitri-filter-tab';
+
+    renderVitriGrid();
+
+    document.getElementById('vitriModal').classList.add('open');
+  }
+
+  function closeVitriModal() {
+    document.getElementById('vitriModal').classList.remove('open');
+  }
+
+  function handleVitriOverlayClick(e) {
+    if (e.target === document.getElementById('vitriModal')) closeVitriModal();
+  }
+
+  function setVitriFilter(filter) {
+    currentVitriFilter = filter;
+
+    // Cập nhật tab UI
+    document.getElementById('ftab-all').className   = 'vitri-filter-tab' + (filter === 'all'   ? ' active-all'   : '');
+    document.getElementById('ftab-used').className  = 'vitri-filter-tab' + (filter === 'used'  ? ' active-used'  : '');
+    document.getElementById('ftab-empty').className = 'vitri-filter-tab' + (filter === 'empty' ? ' active-empty' : '');
+
+    renderVitriGrid();
+  }
+
+  function renderVitriGrid() {
+    const grid = document.getElementById('vitriGrid');
+    const d = viTriStats[currentVitriKho];
+    if (!d) { grid.innerHTML = ''; return; }
+
+    const usedSet = new Set(d.usedSlots || []);
+    const allSlots = d.allSlots || [];
+
+    // Build danh sách slot cần hiển thị theo filter
+    let slots;
+    if (currentVitriFilter === 'used') {
+      slots = allSlots.filter(s => usedSet.has(s));
+    } else if (currentVitriFilter === 'empty') {
+      slots = allSlots.filter(s => !usedSet.has(s));
+    } else {
+      slots = allSlots; // 'all': đã dùng + trống, sắp xếp: đã dùng lên trên
+      slots = [
+        ...allSlots.filter(s => usedSet.has(s)),
+        ...allSlots.filter(s => !usedSet.has(s))
+      ];
+    }
+
+    if (!slots.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaa; padding:20px;">Không có vị trí</div>';
+      return;
+    }
+
+    grid.innerHTML = slots.map(slot => {
+      const isUsed = usedSet.has(slot);
+      return `
+        <div class="vitri-chip ${isUsed ? 'used' : 'empty'}">
+          <span class="chip-icon">${isUsed ? '🟡' : '🟢'}</span>
+          ${slot}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // =============================================
+  // LOGIC TÌM KIẾM (giữ nguyên)
+  // =============================================
+  const prodInput  = document.getElementById('prodSearch');
   const batchInput = document.getElementById('batchSearch');
-  const clearProd = document.getElementById('clearProd');
+  const clearProd  = document.getElementById('clearProd');
   const clearBatch = document.getElementById('clearBatch');
 
   function resetAll() {
@@ -212,8 +631,8 @@
     currentProduct = ""; currentBatch = ""; currentWH = "Tất cả";
     document.getElementById('prodSug').style.display = 'none';
     document.getElementById('batchSug').style.display = 'none';
-    document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
     document.getElementById('resultArea').innerHTML = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
+    document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
   }
 
   prodInput.oninput = (e) => {
@@ -254,8 +673,8 @@
     if (id === 'prodSearch') { currentProduct = ""; clearProd.style.display = 'none'; }
     else { currentBatch = ""; clearBatch.style.display = 'none'; }
     if (!currentProduct && !currentBatch) {
-       document.getElementById('resultArea').innerHTML = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
-       document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
+      document.getElementById('resultArea').innerHTML = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
+      document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
     } else { updateUI(); }
   }
 
@@ -271,7 +690,7 @@
       let whKey = w.trim().toUpperCase();
       let displayName = (whKey === "TẤT CẢ") ? "Tất cả" : (whKey === "CXL" ? "CXL" : `Kho ${whKey}`);
       let mapIconHtml = MAP_IMAGES[whKey] ? `<span class="map-icon" onclick="openMapModal(event, '${whKey}')">🗺️</span>` : "";
-      return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`
+      return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`;
     }).join('');
 
     if (!warehouses.includes(currentWH)) currentWH = "Tất cả";
@@ -281,15 +700,15 @@
 
   function selectWH(wh) { currentWH = wh; updateUI(); }
 
-  // =========================================
-  // BỘ ENGINE ZOOM & PAN NỘI BỘ (CHUYÊN NGHIỆP)
-  // =========================================
+  // =============================================
+  // ENGINE ZOOM & PAN (giữ nguyên)
+  // =============================================
   const modal = document.getElementById('mapModal');
   const img = document.getElementById('mapImage');
   const container = document.getElementById('zoomContainer');
 
   let scale = 1, lastScale = 1;
-  let posX = 0, posY = 0, lastPosX = 0, lastPosY = 0;
+  let posX = 0, posY = 0;
   let startX = 0, startY = 0;
   let isDragging = false;
 
@@ -298,41 +717,25 @@
     document.getElementById('mapTitle').textContent = `Sơ đồ Kho ${whKey}`;
     img.src = MAP_IMAGES[whKey];
     modal.style.display = 'flex';
-    resetZoom(); // Reset trạng thái ảnh mỗi khi mở
+    resetZoom();
   }
 
-  function closeMapModal() {
-    modal.style.display = 'none';
-    img.src = "";
-  }
+  function closeMapModal() { modal.style.display = 'none'; img.src = ""; }
+  function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
+  function updateTransform() { img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
 
-  function resetZoom() {
-    scale = 1; posX = 0; posY = 0;
-    updateTransform();
-  }
-
-  function updateTransform() {
-    img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-  }
-
-  // Xử lý chạm 
   container.addEventListener('touchstart', e => {
     if (e.touches.length === 1) {
-      isDragging = true;
-      startX = e.touches[0].clientX - posX;
-      startY = e.touches[0].clientY - posY;
+      isDragging = true; startX = e.touches[0].clientX - posX; startY = e.touches[0].clientY - posY;
     } else if (e.touches.length === 2) {
-      isDragging = false;
-      lastScale = scale;
-      container.initialDistance = getDistance(e.touches);
+      isDragging = false; lastScale = scale; container.initialDistance = getDistance(e.touches);
     }
   });
 
   container.addEventListener('touchmove', e => {
     e.preventDefault();
     if (e.touches.length === 1 && isDragging) {
-      posX = e.touches[0].clientX - startX;
-      posY = e.touches[0].clientY - startY;
+      posX = e.touches[0].clientX - startX; posY = e.touches[0].clientY - startY;
     } else if (e.touches.length === 2) {
       const dist = getDistance(e.touches);
       scale = Math.min(Math.max(1, lastScale * (dist / container.initialDistance)), 5);
@@ -340,16 +743,12 @@
     updateTransform();
   }, { passive: false });
 
-  container.addEventListener('touchend', () => {
-    isDragging = false;
-    lastScale = scale;
-  });
+  container.addEventListener('touchend', () => { isDragging = false; lastScale = scale; });
+  function getDistance(touches) { return Math.hypot(touches[0].pageX - touches[1].pageX, touches[0].pageY - touches[1].pageY); }
 
-  function getDistance(touches) {
-    return Math.hypot(touches[0].pageX - touches[1].pageX, touches[0].pageY - touches[1].pageY);
-  }
-
-  // Render cards
+  // =============================================
+  // RENDER CARDS (giữ nguyên)
+  // =============================================
   function renderCards(data) {
     const area = document.getElementById('resultArea');
     if (data.length === 0) {
