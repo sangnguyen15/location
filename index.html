@@ -496,69 +496,71 @@
   // RENDER DẢI CARD KHO STATS
   // =============================================
   function renderKhoStats() {
-    const row = document.getElementById('khoStatsRow');
-    const keys = Object.keys(viTriStats);
+  const row = document.getElementById('khoStatsRow');
+  const keys = Object.keys(viTriStats);
 
-    if (!keys.length) {
-      row.innerHTML = '<div class="kho-stats-loading">Không có dữ liệu</div>';
-      return;
-    }
-
-    // Sắp xếp theo tên kho
-    keys.sort();
-
-    row.innerHTML = keys.map(khoKey => {
-      const d = viTriStats[khoKey];
-      const used = d.usedCount || 0;
-      const total = d.total || 0;
-      const pct = total > 0 ? Math.round((used / total) * 100) : 0;
-
-      // Màu theo mức độ sử dụng
-      let colorClass = 'low';   // < 50%
-      if (pct >= 80) colorClass = 'high';
-      else if (pct >= 50) colorClass = 'med';
-
-      return `
-        <div class="kho-stat-card ${colorClass}" onclick="openVitriModal('${khoKey}')">
-          <div class="kho-name">Kho ${khoKey}</div>
-          <div class="kho-ratio">${used}/${total}</div>
-          <div class="kho-bar">
-            <div class="kho-bar-fill" style="width:${pct}%"></div>
-          </div>
-        </div>
-      `;
-    }).join('');
+  if (!keys.length) {
+    row.innerHTML = '<div class="kho-stats-loading">Không có dữ liệu</div>';
+    return;
   }
+
+  // Sắp xếp danh mục hiển thị
+  keys.sort();
+  
+  row.innerHTML = keys.map(khoKey => {
+    const d = viTriStats[khoKey];
+    const used = d.usedCount || 0;
+    const total = d.total || 0;
+    const pct = total > 0 ? Math.round((used / total) * 100) : 0;
+
+    // Định dạng lại tên hiển thị trên Card thanh tiến trình
+    const displayName = (khoKey === "Vi_Tri_DB") ? "Vi_Tri_DB" : `Kho ${khoKey}`;
+
+    let colorClass = 'low'; // < 50%
+    if (pct >= 80) colorClass = 'high';
+    else if (pct >= 50) colorClass = 'med';
+
+    return `
+      <div class="kho-stat-card ${colorClass}" onclick="openVitriModal('${khoKey}')">
+        <div class="kho-name">${displayName}</div>
+        <div class="kho-ratio">${used}/${total}</div>
+        <div class="kho-bar">
+          <div class="kho-bar-fill" style="width:${pct}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
 
   // =============================================
   // POPUP THỐNG KÊ VỊ TRÍ
   // =============================================
   function openVitriModal(khoKey) {
-    currentVitriKho = khoKey;
-    currentVitriFilter = 'all';
+  currentVitriKho = khoKey;
+  currentVitriFilter = 'all';
 
-    const d = viTriStats[khoKey];
-    if (!d) return;
+  const d = viTriStats[khoKey];
+  if (!d) return;
 
-    const used  = d.usedCount || 0;
-    const total = d.total || 0;
-    const empty = total - used;
+  const used  = d.usedCount || 0;
+  const total = d.total || 0;
+  const empty = total - used;
 
-    // Cập nhật header
-    document.getElementById('vitriModalTitle').textContent = `Kho ${khoKey}`;
-    document.getElementById('vitriUsedBadge').textContent  = `🟡 ${used} đã dùng`;
-    document.getElementById('vitriEmptyBadge').textContent = `🟢 ${empty} trống`;
-    document.getElementById('vitriTotalBadge').textContent = `📦 ${total} tổng`;
+  // Cập nhật thông tin Header Popup mẫu mã kho
+  const displayName = (khoKey === "Vi_Tri_DB") ? "Vị Trí Đặc Biệt" : `Kho ${khoKey}`;
+  document.getElementById('vitriModalTitle').textContent = displayName;
+  document.getElementById('vitriUsedBadge').textContent  = `🟡 ${used} đã dùng`;
+  document.getElementById('vitriEmptyBadge').textContent = `🟢 ${empty} trống`;
+  document.getElementById('vitriTotalBadge').textContent = `📦 ${total} tổng`;
 
-    // Reset filter tabs
-    document.getElementById('ftab-all').className   = 'vitri-filter-tab active-all';
-    document.getElementById('ftab-used').className  = 'vitri-filter-tab';
-    document.getElementById('ftab-empty').className = 'vitri-filter-tab';
+  // Reset trạng thái Tab bộ lọc
+  document.getElementById('ftab-all').className   = 'vitri-filter-tab active-all';
+  document.getElementById('ftab-used').className  = 'vitri-filter-tab';
+  document.getElementById('ftab-empty').className = 'vitri-filter-tab';
+  renderVitriGrid();
 
-    renderVitriGrid();
-
-    document.getElementById('vitriModal').classList.add('open');
-  }
+  document.getElementById('vitriModal').classList.add('open');
+}
 
   function closeVitriModal() {
     document.getElementById('vitriModal').classList.remove('open');
@@ -580,42 +582,38 @@
   }
 
   function renderVitriGrid() {
-    const grid = document.getElementById('vitriGrid');
-    const d = viTriStats[currentVitriKho];
-    if (!d) { grid.innerHTML = ''; return; }
+  const grid = document.getElementById('vitriGrid');
+  const d = viTriStats[currentVitriKho];
+  if (!d) { grid.innerHTML = ''; return; }
 
-    const usedSet = new Set(d.usedSlots || []);
-    const allSlots = d.allSlots || [];
+  const usedSet = new Set(d.usedSlots || []);
+  const allSlots = d.allSlots || [];
 
-    // Build danh sách slot cần hiển thị theo filter
-    let slots;
-    if (currentVitriFilter === 'used') {
-      slots = allSlots.filter(s => usedSet.has(s));
-    } else if (currentVitriFilter === 'empty') {
-      slots = allSlots.filter(s => !usedSet.has(s));
-    } else {
-      slots = allSlots; // 'all': đã dùng + trống, sắp xếp: đã dùng lên trên
-      slots = [
-        ...allSlots.filter(s => usedSet.has(s)),
-        ...allSlots.filter(s => !usedSet.has(s))
-      ];
-    }
-
-    if (!slots.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaa; padding:20px;">Không có vị trí</div>';
-      return;
-    }
-
-    grid.innerHTML = slots.map(slot => {
-      const isUsed = usedSet.has(slot);
-      return `
-        <div class="vitri-chip ${isUsed ? 'used' : 'empty'}">
-          <span class="chip-icon">${isUsed ? '🟡' : '🟢'}</span>
-          ${slot}
-        </div>
-      `;
-    }).join('');
+  let slots = [];
+  if (currentVitriFilter === 'used') {
+    slots = allSlots.filter(s => usedSet.has(s));
+  } else if (currentVitriFilter === 'empty') {
+    slots = allSlots.filter(s => !usedSet.has(s));
+  } else {
+    // Trạng thái hiển thị 'Tất cả': Giữ nguyên thứ tự sắp xếp gốc của sơ đồ kho để dễ nhìn
+    slots = allSlots;
   }
+
+  if (!slots.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaa; padding:20px;">Không có vị trí phù hợp</div>';
+    return;
+  }
+
+  grid.innerHTML = slots.map(slot => {
+    const isUsed = usedSet.has(slot);
+    return `
+      <div class="vitri-chip ${isUsed ? 'used' : 'empty'}">
+        <span class="chip-icon">${isUsed ? '🟡' : '🟢'}</span>
+        ${slot}
+      </div>
+    `;
+  }).join('');
+}
 
   // =============================================
   // LOGIC TÌM KIẾM (giữ nguyên)
