@@ -39,12 +39,12 @@
     }
 
     .search-area { padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; }
-
     .input-group { position: relative; display: flex; align-items: center; }
     .search-icon { position: absolute; left: 12px; fill: #999; width: 18px; height: 18px; }
 
     input {
-      width: 100%; padding: 10px 10px 10px 38px; border: 1px solid #ccc;
+      width: 100%; padding: 10px 10px 10px 38px;
+      border: 1px solid #ccc;
       border-radius: 8px; font-size: 16px; outline: none; box-sizing: border-box;
       -webkit-appearance: none;
     }
@@ -52,8 +52,7 @@
     .clear-btn { position: absolute; right: 10px; color: #ccc; font-size: 18px; cursor: pointer; padding: 5px; display: none; }
 
     .btn-reset {
-      background: var(--danger-red);
-      color: white; border: none; padding: 10px;
+      background: var(--danger-red); color: white; border: none; padding: 10px;
       border-radius: 8px; font-weight: bold; font-size: 14px;
       cursor: pointer; width: 100%;
       box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
@@ -68,115 +67,48 @@
     .sug-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 15px; cursor: pointer;}
 
     /* =========================================
-       KHO STATS SECTION (MỚI - giữa nút reset và tab kho)
+       KHO STATS SECTION
        ========================================= */
-    .kho-stats-section {
-      padding: 8px 12px 4px;
-      border-top: 1px solid #eee;
-    }
-
-    .kho-stats-title {
-      font-size: 11px;
-      color: #999;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-
-    .kho-stats-row {
-      display: flex;
-      overflow-x: auto;
-      gap: 6px;
-      padding-bottom: 4px;
-      scrollbar-width: none;
-    }
+    .kho-stats-section { padding: 8px 12px 4px; border-top: 1px solid #eee; }
+    .kho-stats-title { font-size: 11px; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .kho-stats-row { display: flex; overflow-x: auto; gap: 6px; padding-bottom: 4px; scrollbar-width: none; }
     .kho-stats-row::-webkit-scrollbar { display: none; }
 
-    /* Card kho nhỏ */
     .kho-stat-card {
-      flex-shrink: 0;
-      background: white;
-      border: 1.5px solid #e0e8f5;
-      border-radius: 10px;
-      padding: 6px 10px;
-      cursor: pointer;
-      text-align: center;
-      min-width: 64px;
-      transition: all 0.15s;
+      flex-shrink: 0; background: white; border: 1.5px solid #e0e8f5; border-radius: 10px;
+      padding: 6px 10px; cursor: pointer; text-align: center; min-width: 64px; transition: all 0.15s;
       box-shadow: 0 1px 3px rgba(0,86,179,0.07);
     }
     .kho-stat-card:active { transform: scale(0.96); background: var(--light-blue); }
+    .kho-stat-card .kho-name { font-size: 11px; font-weight: 700; color: var(--pharma-blue); margin-bottom: 3px; }
+    .kho-stat-card .kho-ratio { font-size: 13px; font-weight: 800; color: #333; }
+    .kho-stat-card .kho-bar { height: 4px; background: #e9ecef; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+    .kho-stat-card .kho-bar-fill { height: 100%; border-radius: 2px; background: var(--pharma-blue); transition: width 0.4s ease; }
 
-    .kho-stat-card .kho-name {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--pharma-blue);
-      margin-bottom: 3px;
-    }
-
-    .kho-stat-card .kho-ratio {
-      font-size: 13px;
-      font-weight: 800;
-      color: #333;
-    }
-
-    /* Thanh progress nhỏ */
-    .kho-stat-card .kho-bar {
-      height: 4px;
-      background: #e9ecef;
-      border-radius: 2px;
-      margin-top: 4px;
-      overflow: hidden;
-    }
-    .kho-stat-card .kho-bar-fill {
-      height: 100%;
-      border-radius: 2px;
-      background: var(--pharma-blue);
-      transition: width 0.4s ease;
-    }
-
-    /* Màu thanh theo % sử dụng */
     .kho-stat-card.high .kho-bar-fill { background: var(--danger-red); }
     .kho-stat-card.med  .kho-bar-fill { background: var(--warn-orange); }
     .kho-stat-card.low  .kho-bar-fill { background: var(--success-green); }
 
-    /* Trạng thái loading */
-    .kho-stats-loading {
-      font-size: 12px;
-      color: #aaa;
-      padding: 4px 0 8px;
-      text-align: center;
-    }
+    .kho-stats-loading { font-size: 12px; color: #aaa; padding: 4px 0 8px; text-align: center; }
 
     /* =========================================
-       TAB KHO (giữ nguyên)
+       TAB KHO
        ========================================= */
     .tab-container { display: flex; overflow-x: auto; padding: 5px 10px 10px; gap: 8px; scrollbar-width: none; }
     .tab-container::-webkit-scrollbar { display: none; }
     .tab {
       padding: 6px 15px; background: #e0e0e0; border-radius: 20px; white-space: nowrap;
-      font-size: 14px; font-weight: 500; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
     .tab.active { background: var(--pharma-blue); color: white; }
-
-    .map-icon {
-      font-size: 14px; margin-left: 6px; padding: 2px 4px;
-      background: rgba(255, 255, 255, 0.4); border-radius: 4px;
-    }
+    .map-icon { font-size: 14px; margin-left: 6px; padding: 2px 4px; background: rgba(255, 255, 255, 0.4); border-radius: 4px; }
     .tab.active .map-icon { background: rgba(255, 255, 255, 0.2); }
 
     /* =========================================
        CONTENT
        ========================================= */
-    /* Tăng margin-top vì header cao hơn (thêm kho stats) */
     .content { margin-top: calc(310px + env(safe-area-inset-top)); padding: 15px; }
-
-    .card {
-      background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px;
-      border-left: 5px solid var(--pharma-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
+    .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; border-left: 5px solid var(--pharma-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .card-name { font-weight: bold; color: var(--pharma-blue); font-size: 1rem; margin-bottom: 8px; line-height: 1.3; border-bottom: 1px dashed #eee; padding-bottom: 5px;}
     .card-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px; align-items: center;}
     .label { color: #666; }
@@ -185,166 +117,46 @@
     .pos-box { margin-top: 8px; border: 1px solid var(--pharma-blue); color: var(--pharma-blue); padding: 6px; border-radius: 6px; text-align: center; font-size: 14px; background: white;}
 
     /* =========================================
-       POPUP SƠ ĐỒ KHO (giữ nguyên)
+       POPUP SƠ ĐỒ KHO
        ========================================= */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.9); z-index: 9999;
-      display: none; justify-content: center; align-items: center;
-    }
-    .modal-content {
-      position: relative; width: 100%; height: 100%;
-      display: flex; flex-direction: column; overflow: hidden;
-    }
-    .modal-header {
-      padding: 15px; color: white; display: flex;
-      justify-content: space-between; align-items: center;
-      background: rgba(0,0,0,0.5); z-index: 10;
-      padding-top: calc(15px + env(safe-area-inset-top));
-    }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; display: none; justify-content: center; align-items: center; }
+    .modal-content { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+    .modal-header { padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); z-index: 10; padding-top: calc(15px + env(safe-area-inset-top)); }
     .modal-header-title span { font-weight: bold; font-size: 1.2rem; }
     .modal-header-title small { display: block; font-size: 0.8rem; opacity: 0.8; }
-    .close-modal {
-      font-size: 28px; cursor: pointer; width: 44px; height: 44px;
-      display: flex; justify-content: center; align-items: center;
-    }
-    .modal-body {
-      flex: 1; position: relative; overflow: hidden;
-      display: flex; justify-content: center; align-items: center;
-      touch-action: none;
-    }
-    .modal-img {
-      max-width: 100%; max-height: 100%;
-      transition: transform 0.1s ease-out;
-      will-change: transform;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
+    .close-modal { font-size: 28px; cursor: pointer; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; }
+    .modal-body { flex: 1; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: none; }
+    .modal-img { max-width: 100%; max-height: 100%; transition: transform 0.1s ease-out; will-change: transform; user-select: none; -webkit-user-drag: none; }
 
     /* =========================================
-       POPUP THỐNG KÊ VỊ TRÍ (MỚI)
+       POPUP THỐNG KÊ VỊ TRÍ
        ========================================= */
-    .vitri-modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); z-index: 9998;
-      display: none; justify-content: center; align-items: flex-end;
-    }
+    .vitri-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9998; display: none; justify-content: center; align-items: flex-end; }
     .vitri-modal-overlay.open { display: flex; }
+    .vitri-modal-sheet { background: white; width: 100%; max-height: 85vh; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; overflow: hidden; padding-bottom: env(safe-area-inset-bottom); animation: slideUp 0.25s ease-out; }
 
-    .vitri-modal-sheet {
-      background: white;
-      width: 100%;
-      max-height: 85vh;
-      border-radius: 20px 20px 0 0;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding-bottom: env(safe-area-inset-bottom);
-      animation: slideUp 0.25s ease-out;
-    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
-    }
+    .vitri-modal-header { padding: 16px 20px 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
+    .vitri-modal-header-info h3 { margin: 0 0 4px; font-size: 1.1rem; color: var(--pharma-blue); }
+    .vitri-modal-summary { display: flex; gap: 10px; font-size: 13px; }
 
-    .vitri-modal-header {
-      padding: 16px 20px 12px;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-shrink: 0;
-    }
+    .badge-used { background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .badge-empty { background: #d1e7dd; color: #0f5132; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .badge-total { background: #e7f1ff; color: var(--pharma-blue); padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .vitri-close-btn { font-size: 24px; cursor: pointer; color: #666; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f0f2f5; flex-shrink: 0; }
 
-    .vitri-modal-header-info h3 {
-      margin: 0 0 4px;
-      font-size: 1.1rem;
-      color: var(--pharma-blue);
-    }
-
-    .vitri-modal-summary {
-      display: flex;
-      gap: 10px;
-      font-size: 13px;
-    }
-
-    .badge-used {
-      background: #fff3cd; color: #856404;
-      padding: 2px 8px; border-radius: 10px; font-weight: 600;
-    }
-    .badge-empty {
-      background: #d1e7dd; color: #0f5132;
-      padding: 2px 8px; border-radius: 10px; font-weight: 600;
-    }
-    .badge-total {
-      background: #e7f1ff; color: var(--pharma-blue);
-      padding: 2px 8px; border-radius: 10px; font-weight: 600;
-    }
-
-    .vitri-close-btn {
-      font-size: 24px; cursor: pointer; color: #666;
-      width: 36px; height: 36px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%; background: #f0f2f5;
-      flex-shrink: 0;
-    }
-
-    /* Tab bộ lọc trong popup */
-    .vitri-filter-tabs {
-      display: flex;
-      padding: 10px 15px;
-      gap: 8px;
-      border-bottom: 1px solid #f0f0f0;
-      flex-shrink: 0;
-    }
-
-    .vitri-filter-tab {
-      flex: 1; padding: 8px; border-radius: 8px;
-      text-align: center; font-size: 13px; font-weight: 600;
-      cursor: pointer; border: 1.5px solid #e0e0e0;
-      color: #666; background: white;
-    }
+    .vitri-filter-tabs { display: flex; padding: 10px 15px; gap: 8px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
+    .vitri-filter-tab { flex: 1; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid #e0e0e0; color: #666; background: white; }
     .vitri-filter-tab.active-all   { border-color: var(--pharma-blue); background: var(--pharma-blue); color: white; }
     .vitri-filter-tab.active-used  { border-color: var(--warn-orange); background: #fff8f0; color: #c85a00; }
     .vitri-filter-tab.active-empty { border-color: var(--success-green); background: #f0fff4; color: #1a6b30; }
 
-    /* Lưới mã vị trí */
-    .vitri-grid {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px 15px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      align-content: start;
-    }
-
-    .vitri-chip {
-      padding: 8px 5px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1.5px solid;
-      line-height: 1.2;
-    }
-
-    .vitri-chip.used {
-      background: #fff8f0;
-      border-color: var(--warn-orange);
-      color: #c85a00;
-    }
-    .vitri-chip.empty {
-      background: #f0fff4;
-      border-color: #a3d9b1;
-      color: #1a6b30;
-    }
-    .vitri-chip .chip-icon {
-      font-size: 10px;
-      display: block;
-      margin-bottom: 2px;
-    }
+    .vitri-grid { flex: 1; overflow-y: auto; padding: 12px 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; align-content: start; }
+    .vitri-chip { padding: 8px 5px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600; border: 1.5px solid; line-height: 1.2; }
+    .vitri-chip.used { background: #fff8f0; border-color: var(--warn-orange); color: #c85a00; }
+    .vitri-chip.empty { background: #f0fff4; border-color: #a3d9b1; color: #1a6b30; }
+    .vitri-chip .chip-icon { font-size: 10px; display: block; margin-bottom: 2px; }
   </style>
 </head>
 <body>
@@ -359,6 +171,7 @@
       <span class="clear-btn" id="clearProd" onclick="clearInput('prodSearch')">✕</span>
       <div id="prodSug" class="suggestions"></div>
     </div>
+    
     <div class="input-group">
       <svg class="search-icon" viewBox="0 0 24 24"><path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
       <input type="text" id="batchSearch" placeholder="Nhập số lô" autocomplete="off">
@@ -368,9 +181,6 @@
     <button class="btn-reset" onclick="resetAll()">Xóa tất cả</button>
   </div>
 
-  <!-- =============================================
-       KHO STATS SECTION — Hiển thị tất cả các kho
-       ============================================= -->
   <div class="kho-stats-section">
     <div class="kho-stats-title">Tình trạng sử dụng vị trí</div>
     <div class="kho-stats-row" id="khoStatsRow">
@@ -378,7 +188,6 @@
     </div>
   </div>
 
-  <!-- Tab kho (giữ nguyên) -->
   <div id="warehouseTabs" class="tab-container">
     <div class="tab active" onclick="selectWH('Tất cả')">Tất cả</div>
   </div>
@@ -388,7 +197,6 @@
   <div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>
 </div>
 
-<!-- MODAL SƠ ĐỒ KHO (giữ nguyên) -->
 <div id="mapModal" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-header">
@@ -404,10 +212,8 @@
   </div>
 </div>
 
-<!-- MODAL THỐNG KÊ VỊ TRÍ (MỚI) -->
 <div id="vitriModal" class="vitri-modal-overlay" onclick="handleVitriOverlayClick(event)">
   <div class="vitri-modal-sheet" onclick="event.stopPropagation()">
-    <!-- Header -->
     <div class="vitri-modal-header">
       <div class="vitri-modal-header-info">
         <h3 id="vitriModalTitle">Kho 3A</h3>
@@ -420,14 +226,12 @@
       <div class="vitri-close-btn" onclick="closeVitriModal()">✕</div>
     </div>
 
-    <!-- Filter tabs -->
     <div class="vitri-filter-tabs">
       <div class="vitri-filter-tab active-all" id="ftab-all" onclick="setVitriFilter('all')">Tất cả</div>
       <div class="vitri-filter-tab" id="ftab-used" onclick="setVitriFilter('used')">🟡 Đã dùng</div>
       <div class="vitri-filter-tab" id="ftab-empty" onclick="setVitriFilter('empty')">🟢 Còn trống</div>
     </div>
 
-    <!-- Grid vị trí -->
     <div class="vitri-grid" id="vitriGrid"></div>
   </div>
 </div>
@@ -445,24 +249,21 @@
     "6B": "images/kho6b.png"
   };
 
-  // ⚠️ Thay bằng URL deploy của bạn
+  // ⚠️ Đường dẫn API Web App của bạn
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbwFkON_Tpk_F08M8pnHWiAf-QVBjkv4wegUCyJBxuN1FNtUgNh8LktrkNumbBGNzkVb/exec';
 
   let allData = [];
-  let viTriStats = {};   // { "3A": { total, usedCount, allSlots[], usedSlots[] }, ... }
+  let viTriStats = {};   
   let currentProduct = "";
   let currentBatch = "";
   let currentWH = "Tất cả";
-
-  // Trạng thái popup vị trí
   let currentVitriKho = null;
   let currentVitriFilter = 'all';
 
   // =============================================
-  // KHỞI ĐỘNG: Gọi 2 API song song
+  // KHỞI ĐỘNG HỆ THỐNG VÀ ĐỒNG BỘ TAB BAN ĐẦU
   // =============================================
   window.onload = () => {
-    // Dùng cache tức thì nếu có
     const cached = localStorage.getItem('pharma_cache');
     if (cached) { allData = JSON.parse(cached); }
 
@@ -472,7 +273,6 @@
       renderKhoStats();
     }
 
-    // Gọi 2 API song song
     Promise.all([
       fetch(GAS_URL).then(r => r.json()),
       fetch(GAS_URL + '?type=vitri').then(r => r.json())
@@ -482,141 +282,114 @@
       localStorage.setItem('pharma_cache', JSON.stringify(inventoryData));
       localStorage.setItem('vitri_stats_cache', JSON.stringify(vtData));
       renderKhoStats();
+      updateUI(); // Đảm bảo đồng bộ dải tab sạch khi tải xong
     }).catch(err => {
       console.warn('Lỗi fetch:', err);
-      // Đã có cache, vẫn render được
       if (!Object.keys(viTriStats).length) {
-        document.getElementById('khoStatsRow').innerHTML =
-          '<div class="kho-stats-loading">⚠️ Không tải được dữ liệu</div>';
+        document.getElementById('khoStatsRow').innerHTML = '<div class="kho-stats-loading">⚠️ Không tải được dữ liệu</div>';
       }
     });
   };
 
-  // =============================================
-  // RENDER DẢI CARD KHO STATS
-  // =============================================
   function renderKhoStats() {
-  const row = document.getElementById('khoStatsRow');
-  const keys = Object.keys(viTriStats);
+    const row = document.getElementById('khoStatsRow');
+    const keys = Object.keys(viTriStats);
+    if (!keys.length) {
+      row.innerHTML = '<div class="kho-stats-loading">Không có dữ liệu</div>';
+      return;
+    }
+    keys.sort();
+    row.innerHTML = keys.map(khoKey => {
+      const d = viTriStats[khoKey];
+      const used = d.usedCount || 0;
+      const total = d.total || 0;
+      const pct = total > 0 ? Math.round((used / total) * 100) : 0;
+      const displayName = (khoKey === "Vi_Tri_DB") ? "Vi_Tri_DB" : `Kho ${khoKey}`;
 
-  if (!keys.length) {
-    row.innerHTML = '<div class="kho-stats-loading">Không có dữ liệu</div>';
-    return;
+      let colorClass = 'low';
+      if (pct >= 80) colorClass = 'high';
+      else if (pct >= 50) colorClass = 'med';
+
+      return `
+        <div class="kho-stat-card ${colorClass}" onclick="openVitriModal('${khoKey}')">
+          <div class="kho-name">${displayName}</div>
+          <div class="kho-ratio">${used}/${total}</div>
+          <div class="kho-bar">
+            <div class="kho-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
-  // Sắp xếp danh mục hiển thị
-  keys.sort();
-  
-  row.innerHTML = keys.map(khoKey => {
-    const d = viTriStats[khoKey];
-    const used = d.usedCount || 0;
-    const total = d.total || 0;
-    const pct = total > 0 ? Math.round((used / total) * 100) : 0;
-
-    // Định dạng lại tên hiển thị trên Card thanh tiến trình
-    const displayName = (khoKey === "Vi_Tri_DB") ? "Vi_Tri_DB" : `Kho ${khoKey}`;
-
-    let colorClass = 'low'; // < 50%
-    if (pct >= 80) colorClass = 'high';
-    else if (pct >= 50) colorClass = 'med';
-
-    return `
-      <div class="kho-stat-card ${colorClass}" onclick="openVitriModal('${khoKey}')">
-        <div class="kho-name">${displayName}</div>
-        <div class="kho-ratio">${used}/${total}</div>
-        <div class="kho-bar">
-          <div class="kho-bar-fill" style="width:${pct}%"></div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
   // =============================================
-  // POPUP THỐNG KÊ VỊ TRÍ
+  // POPUP THỐNG KÊ CHI TIẾT VỊ TRÍ
   // =============================================
   function openVitriModal(khoKey) {
-  currentVitriKho = khoKey;
-  currentVitriFilter = 'all';
+    currentVitriKho = khoKey;
+    currentVitriFilter = 'all';
+    const d = viTriStats[khoKey];
+    if (!d) return;
 
-  const d = viTriStats[khoKey];
-  if (!d) return;
-
-  const used  = d.usedCount || 0;
-  const total = d.total || 0;
-  const empty = total - used;
-
-  // Cập nhật thông tin Header Popup mẫu mã kho
-  const displayName = (khoKey === "Vi_Tri_DB") ? "Vị Trí Đặc Biệt" : `Kho ${khoKey}`;
-  document.getElementById('vitriModalTitle').textContent = displayName;
-  document.getElementById('vitriUsedBadge').textContent  = `🟡 ${used} đã dùng`;
-  document.getElementById('vitriEmptyBadge').textContent = `🟢 ${empty} trống`;
-  document.getElementById('vitriTotalBadge').textContent = `📦 ${total} tổng`;
-
-  // Reset trạng thái Tab bộ lọc
-  document.getElementById('ftab-all').className   = 'vitri-filter-tab active-all';
-  document.getElementById('ftab-used').className  = 'vitri-filter-tab';
-  document.getElementById('ftab-empty').className = 'vitri-filter-tab';
-  renderVitriGrid();
-
-  document.getElementById('vitriModal').classList.add('open');
-}
-
-  function closeVitriModal() {
-    document.getElementById('vitriModal').classList.remove('open');
+    const used  = d.usedCount || 0;
+    const total = d.total || 0;
+    const empty = total - used;
+    const displayName = (khoKey === "Vi_Tri_DB") ? "Vị Trí Đặc Biệt" : `Kho ${khoKey}`;
+    
+    document.getElementById('vitriModalTitle').textContent = displayName;
+    document.getElementById('vitriUsedBadge').textContent  = `🟡 ${used} đã dùng`;
+    document.getElementById('vitriEmptyBadge').textContent = `🟢 ${empty} trống`;
+    document.getElementById('vitriTotalBadge').textContent = `📦 ${total} tổng`;
+    
+    document.getElementById('ftab-all').className   = 'vitri-filter-tab active-all';
+    document.getElementById('ftab-used').className  = 'vitri-filter-tab';
+    document.getElementById('ftab-empty').className = 'vitri-filter-tab';
+    renderVitriGrid();
+    document.getElementById('vitriModal').classList.add('open');
   }
 
-  function handleVitriOverlayClick(e) {
-    if (e.target === document.getElementById('vitriModal')) closeVitriModal();
-  }
+  function closeVitriModal() { document.getElementById('vitriModal').classList.remove('open'); }
+  function handleVitriOverlayClick(e) { if (e.target === document.getElementById('vitriModal')) closeVitriModal(); }
 
   function setVitriFilter(filter) {
     currentVitriFilter = filter;
-
-    // Cập nhật tab UI
     document.getElementById('ftab-all').className   = 'vitri-filter-tab' + (filter === 'all'   ? ' active-all'   : '');
     document.getElementById('ftab-used').className  = 'vitri-filter-tab' + (filter === 'used'  ? ' active-used'  : '');
     document.getElementById('ftab-empty').className = 'vitri-filter-tab' + (filter === 'empty' ? ' active-empty' : '');
-
     renderVitriGrid();
   }
 
   function renderVitriGrid() {
-  const grid = document.getElementById('vitriGrid');
-  const d = viTriStats[currentVitriKho];
-  if (!d) { grid.innerHTML = ''; return; }
+    const grid = document.getElementById('vitriGrid');
+    const d = viTriStats[currentVitriKho];
+    if (!d) { grid.innerHTML = ''; return; }
 
-  const usedSet = new Set(d.usedSlots || []);
-  const allSlots = d.allSlots || [];
+    const usedSet = new Set(d.usedSlots || []);
+    const allSlots = d.allSlots || [];
+    let slots = [];
 
-  let slots = [];
-  if (currentVitriFilter === 'used') {
-    slots = allSlots.filter(s => usedSet.has(s));
-  } else if (currentVitriFilter === 'empty') {
-    slots = allSlots.filter(s => !usedSet.has(s));
-  } else {
-    // Trạng thái hiển thị 'Tất cả': Giữ nguyên thứ tự sắp xếp gốc của sơ đồ kho để dễ nhìn
-    slots = allSlots;
+    if (currentVitriFilter === 'used') { slots = allSlots.filter(s => usedSet.has(s)); }
+    else if (currentVitriFilter === 'empty') { slots = allSlots.filter(s => !usedSet.has(s)); }
+    else { slots = allSlots; }
+
+    if (!slots.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaa; padding:20px;">Không có vị trí phù hợp</div>';
+      return;
+    }
+
+    grid.innerHTML = slots.map(slot => {
+      const isUsed = usedSet.has(slot);
+      return `
+        <div class="vitri-chip ${isUsed ? 'used' : 'empty'}">
+          <span class="chip-icon">${isUsed ? '🟡' : '🟢'}</span>
+          ${slot}
+        </div>
+      `;
+    }).join('');
   }
-
-  if (!slots.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaa; padding:20px;">Không có vị trí phù hợp</div>';
-    return;
-  }
-
-  grid.innerHTML = slots.map(slot => {
-    const isUsed = usedSet.has(slot);
-    return `
-      <div class="vitri-chip ${isUsed ? 'used' : 'empty'}">
-        <span class="chip-icon">${isUsed ? '🟡' : '🟢'}</span>
-        ${slot}
-      </div>
-    `;
-  }).join('');
-}
 
   // =============================================
-  // LOGIC TÌM KIẾM (giữ nguyên)
+  // ENGINE TÌM KIẾM SẢN PHẨM & SỐ LÔ
   // =============================================
   const prodInput  = document.getElementById('prodSearch');
   const batchInput = document.getElementById('batchSearch');
@@ -630,7 +403,7 @@
     document.getElementById('prodSug').style.display = 'none';
     document.getElementById('batchSug').style.display = 'none';
     document.getElementById('resultArea').innerHTML = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
-    document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
+    updateUI(); // Vẽ lại dải tab sạch sẽ về trạng thái mặc định
   }
 
   prodInput.oninput = (e) => {
@@ -670,62 +443,65 @@
     document.getElementById(id).value = "";
     if (id === 'prodSearch') { currentProduct = ""; clearProd.style.display = 'none'; }
     else { currentBatch = ""; clearBatch.style.display = 'none'; }
+    
     if (!currentProduct && !currentBatch) {
       document.getElementById('resultArea').innerHTML = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
-      document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
-    } else { updateUI(); }
-  }
-
-  function updateUI() {
-  if (!currentProduct && !currentBatch) return;
-  let filtered = allData;
-  if (currentProduct) filtered = filtered.filter(i => i.Ten_SP === currentProduct);
-  if (currentBatch) filtered = filtered.filter(i => String(i.So_Lo).toLowerCase().includes(currentBatch.toLowerCase()));
-
-  // DANH SÁCH 10 KHO ĐƯỢC PHÉP HIỂN THỊ TAB (Không hiển thị kho "Khác")
-  const ALLOWED_KHOS = ["Vi_Tri_DB", "1A", "3A", "3B", "4A", "4B", "5A", "5B", "6A", "6B"];
-
-  // Lấy các kho xuất hiện từ kết quả tìm kiếm, loại bỏ trùng lặp và bắt buộc phải nằm trong 10 kho chuẩn
-  const rawWarehouses = filtered.map(i => String(i.Ten_Kho || "").trim());
-  const validWHs = [...new Set(rawWarehouses)].filter(w => ALLOWED_KHOS.map(a => a.toLowerCase()).includes(w.toLowerCase()));
-
-  // Chuyển đổi về đúng định dạng chữ chuẩn để hiển thị đẹp mắt
-  const finalWHs = ALLOWED_KHOS.filter(a => validWHs.map(v => v.toLowerCase()).includes(a.toLowerCase()));
-
-  // Thêm tab "Tất cả" vào đầu dải Tab
-  const warehouses = ["Tất cả", ...finalWHs];
-  
-  const tabContainer = document.getElementById('warehouseTabs');
-  tabContainer.innerHTML = warehouses.map(w => {
-    let displayName = w;
-    if (w !== "Tất cả" && w !== "Vi_Tri_DB") {
-      displayName = `Kho ${w}`;
+      currentWH = "Tất cả";
+      updateUI();
+    } else { 
+      updateUI(); 
     }
-    
-    // Tạo Icon bản đồ dựa trên mã Key dạng chữ Hoa
-    let mapKey = w.toUpperCase();
-    let mapIconHtml = MAP_IMAGES[mapKey] ? `<span class="map-icon" onclick="openMapModal(event, '${mapKey}')">🗺️</span>` : "";
-    
-    return `<div class="tab ${w.toLowerCase() === currentWH.toLowerCase() ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`;
-  }).join('');
-
-  // Nếu Tab đang chọn bỗng dưng không có trong danh sách tìm kiếm nữa thì đưa về mặc định "Tất cả"
-  if (!warehouses.map(w => w.toLowerCase()).includes(currentWH.toLowerCase())) {
-    currentWH = "Tất cả";
   }
 
-  // Tiến hành lọc dữ liệu hiển thị xuống các Card
-  if (currentWH !== "Tất cả") {
-    filtered = filtered.filter(i => String(i.Ten_Kho).toLowerCase() === currentWH.toLowerCase());
+  // =============================================
+  // HÀM UPDATEUI: VÁ LỖI HIỂN THỊ TAB KHO RÁC
+  // =============================================
+  function updateUI() {
+    let filtered = allData;
+    if (currentProduct) filtered = filtered.filter(i => i.Ten_SP === currentProduct);
+    if (currentBatch) filtered = filtered.filter(i => String(i.So_Lo).toLowerCase().includes(currentBatch.toLowerCase()));
+
+    // 10 KHO HỢP LỆ DUY NHẤT ĐƯỢC PHÉP HIỂN THỊ TAB
+    const ALLOWED_KHOS = ["Vi_Tri_DB", "1A", "3A", "3B", "4A", "4B", "5A", "5B", "6A", "6B"];
+
+    // Chỉ lấy các kho hợp lệ từ dữ liệu thực tế sau khi lọc
+    const rawWarehouses = filtered.map(i => String(i.Ten_Kho || "").trim());
+    const validWHs = [...new Set(rawWarehouses)].filter(w => ALLOWED_KHOS.map(a => a.toLowerCase()).includes(w.toLowerCase()));
+
+    // Đồng bộ chữ Hoa/Thường theo mảng cấu hình chuẩn
+    const finalWHs = ALLOWED_KHOS.filter(a => validWHs.map(v => v.toLowerCase()).includes(a.toLowerCase()));
+    
+    // Nếu chưa tìm kiếm gì, mặc định vẽ đủ cả 10 kho để giao diện đẹp mắt
+    const warehouses = (!currentProduct && !currentBatch) ? ["Tất cả", ...ALLOWED_KHOS] : ["Tất cả", ...finalWHs];
+
+    const tabContainer = document.getElementById('warehouseTabs');
+    tabContainer.innerHTML = warehouses.map(w => {
+      let displayName = w;
+      if (w !== "Tất cả" && w !== "Vi_Tri_DB") { displayName = `Kho ${w}`; }
+      
+      let mapKey = w.toUpperCase();
+      let mapIconHtml = MAP_IMAGES[mapKey] ? `<span class="map-icon" onclick="openMapModal(event, '${mapKey}')">🗺️</span>` : "";
+      return `<div class="tab ${w.toLowerCase() === currentWH.toLowerCase() ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`;
+    }).join('');
+
+    if (!warehouses.map(w => w.toLowerCase()).includes(currentWH.toLowerCase())) { currentWH = "Tất cả"; }
+
+    // Thực hiện hiển thị Card sản phẩm xuống vùng nội dung
+    if (!currentProduct && !currentBatch) {
+      // Chưa tìm kiếm thì không hiện card sản phẩm
+      return;
+    }
+
+    if (currentWH !== "Tất cả") {
+      filtered = filtered.filter(i => String(i.Ten_Kho).toLowerCase() === currentWH.toLowerCase());
+    }
+    renderCards(filtered);
   }
-  
-  renderCards(filtered);
-}
 
   function selectWH(wh) { currentWH = wh; updateUI(); }
 
   // =============================================
-  // ENGINE ZOOM & PAN (giữ nguyên)
+  // ENGINE ZOOM & PAN SƠ ĐỒ BẢN ĐỒ
   // =============================================
   const modal = document.getElementById('mapModal');
   const img = document.getElementById('mapImage');
@@ -771,7 +547,7 @@
   function getDistance(touches) { return Math.hypot(touches[0].pageX - touches[1].pageX, touches[0].pageY - touches[1].pageY); }
 
   // =============================================
-  // RENDER CARDS (giữ nguyên)
+  // RENDER DANH SÁCH THẺ SẢN PHẨM (CARD)
   // =============================================
   function renderCards(data) {
     const area = document.getElementById('resultArea');
@@ -801,12 +577,10 @@
     }).join('');
   }
 
-  // Auto hide suggestions
   document.addEventListener('click', e => {
     if (e.target !== prodInput && !document.getElementById('prodSug').contains(e.target)) document.getElementById('prodSug').style.display = 'none';
     if (e.target !== batchInput && !document.getElementById('batchSug').contains(e.target)) document.getElementById('batchSug').style.display = 'none';
   });
-
   prodInput.addEventListener('focus', () => { if (prodInput.value.trim()) document.getElementById('prodSug').style.display = 'block'; });
   batchInput.addEventListener('focus', () => { if (batchInput.value.trim()) document.getElementById('batchSug').style.display = 'block'; });
 </script>
