@@ -16,13 +16,17 @@
       --danger-red: #dc3545;
       --success-green: #28a745;
     }
-    body { font-family: -apple-system, sans-serif; margin: 0; background: #f0f2f5; color: #333; touch-action: manipulation; overflow-x: hidden; }
 
-    /* =========================================
-       FIXED HEADER (giữ nguyên cấu trúc gốc)
-       ========================================= */
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0; background: #f0f2f5; color: #333;
+      touch-action: manipulation; overflow-x: hidden;
+    }
+
+    /* ===================== FIXED HEADER ===================== */
     .fixed-header {
-      position: fixed; top: 0; width: 100%;
+      position: fixed; top: 0; left: 0; width: 100%;
       background: white; z-index: 1000;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
@@ -31,200 +35,254 @@
       padding: 10px; padding-top: calc(10px + env(safe-area-inset-top));
       text-align: center; font-weight: bold; font-size: 1.1rem;
     }
+
+    /* ===================== SEARCH AREA ===================== */
     .search-area { padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; }
     .input-group { position: relative; display: flex; align-items: center; }
-    .search-icon { position: absolute; left: 12px; fill: #999; width: 18px; height: 18px; }
+    .search-icon { position: absolute; left: 12px; fill: #999; width: 18px; height: 18px; flex-shrink: 0; }
     input {
-      width: 100%; padding: 10px 10px 10px 38px; border: 1px solid #ccc;
-      border-radius: 8px; font-size: 16px; outline: none; box-sizing: border-box;
+      width: 100%; padding: 10px 32px 10px 38px;
+      border: 1px solid #ccc; border-radius: 8px;
+      font-size: 16px; outline: none;
       -webkit-appearance: none;
     }
     input:focus { border-color: var(--pharma-blue); }
-    .clear-btn { position: absolute; right: 10px; color: #ccc; font-size: 18px; cursor: pointer; padding: 5px; display: none; }
+    .clear-btn {
+      position: absolute; right: 10px; color: #ccc;
+      font-size: 18px; cursor: pointer; padding: 5px; display: none;
+    }
     .btn-reset {
-      background: var(--danger-red); color: white; border: none; padding: 10px;
-      border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;
-      box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+      background: var(--danger-red); color: white; border: none;
+      padding: 10px; border-radius: 8px; font-weight: bold;
+      font-size: 14px; cursor: pointer; width: 100%;
+      box-shadow: 0 2px 4px rgba(220,53,69,0.3);
     }
     .btn-reset:active { opacity: 0.8; }
     .suggestions {
-      position: absolute; top: 45px; width: 100%; background: white;
-      border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: absolute; top: 46px; left: 0; width: 100%;
+      background: white; border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       max-height: 200px; overflow-y: auto; z-index: 1100; display: none;
     }
-    .sug-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 15px; cursor: pointer; }
+    .sug-item {
+      padding: 12px 15px; border-bottom: 1px solid #f0f0f0;
+      font-size: 15px; cursor: pointer;
+    }
+    .sug-item:active { background: var(--light-blue); }
 
-    /* =========================================
-       KHO STATS — nằm giữa nút reset và tab kho
-       ========================================= */
+    /* ===================== KHO STATS =====================
+       Nằm giữa nút "Xóa tất cả" và tab kho tìm kiếm
+       Hiển thị cố định 9 kho — tách biệt hoàn toàn
+       ===================================================== */
     .kho-stats-section {
       padding: 8px 12px 6px;
       border-top: 1px solid #f0f0f0;
     }
-    .kho-stats-title {
+    .kho-stats-label {
       font-size: 10px; color: #aaa; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.7px;
+      margin-bottom: 7px;
     }
     .kho-stats-row {
-      display: flex; gap: 6px; overflow-x: auto;
-      padding-bottom: 2px; scrollbar-width: none;
+      display: flex; gap: 7px;
+      overflow-x: auto; padding-bottom: 3px;
+      scrollbar-width: none;
     }
     .kho-stats-row::-webkit-scrollbar { display: none; }
 
-    /* Card từng kho — chỉ 9 kho cố định */
-    .kho-stat-card {
-      flex: 0 0 auto;
-      min-width: 68px;
+    /* Card từng kho */
+    .kc {
+      flex: 0 0 auto; min-width: 66px;
+      border: 1.5px solid #d0dff5; border-radius: 10px;
+      padding: 7px 8px 6px; cursor: pointer; text-align: center;
       background: white;
-      border: 1.5px solid #d0dff5;
-      border-radius: 10px;
-      padding: 7px 8px 5px;
-      cursor: pointer;
-      text-align: center;
-      transition: background 0.12s, transform 0.1s;
       box-shadow: 0 1px 3px rgba(0,86,179,0.06);
+      transition: transform 0.1s, background 0.1s;
     }
-    .kho-stat-card:active { transform: scale(0.95); background: var(--light-blue); }
+    .kc:active { transform: scale(0.94); background: var(--light-blue); }
+    .kc-name  { font-size: 11px; font-weight: 700; color: var(--pharma-blue); margin-bottom: 2px; }
+    .kc-ratio { font-size: 14px; font-weight: 800; color: #111; }
+    .kc-bar   { height: 4px; background: #edf0f5; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+    .kc-fill  { height: 100%; border-radius: 2px; background: var(--success-green); transition: width 0.5s; }
+    /* Màu thanh theo % sử dụng */
+    .kc.hi .kc-fill { background: var(--danger-red); }
+    .kc.md .kc-fill { background: var(--warn-orange); }
+    .kc.lo .kc-fill { background: var(--success-green); }
 
-    .kho-stat-card .kc-name {
-      font-size: 11px; font-weight: 700;
-      color: var(--pharma-blue); margin-bottom: 2px;
+    /* ===================== TAB KHO TÌM KIẾM ===================== */
+    .tab-container {
+      display: flex; overflow-x: auto;
+      padding: 5px 10px 10px; gap: 8px;
+      scrollbar-width: none;
     }
-    .kho-stat-card .kc-ratio {
-      font-size: 14px; font-weight: 800; color: #222;
-    }
-    .kho-stat-card .kc-bar {
-      height: 4px; background: #edf0f5; border-radius: 2px;
-      margin-top: 4px; overflow: hidden;
-    }
-    .kho-stat-card .kc-fill {
-      height: 100%; border-radius: 2px;
-      background: var(--pharma-blue); transition: width 0.5s;
-    }
-    /* Màu thanh theo % */
-    .kho-stat-card.pct-high .kc-fill { background: var(--danger-red); }
-    .kho-stat-card.pct-med  .kc-fill { background: var(--warn-orange); }
-    .kho-stat-card.pct-low  .kc-fill { background: var(--success-green); }
-
-    /* Tab kho tìm kiếm (giữ nguyên) */
-    .tab-container { display: flex; overflow-x: auto; padding: 5px 10px 10px; gap: 8px; scrollbar-width: none; }
     .tab-container::-webkit-scrollbar { display: none; }
     .tab {
-      padding: 6px 15px; background: #e0e0e0; border-radius: 20px; white-space: nowrap;
+      flex-shrink: 0; padding: 6px 15px;
+      background: #e0e0e0; border-radius: 20px;
       font-size: 14px; font-weight: 500; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center;
     }
     .tab.active { background: var(--pharma-blue); color: white; }
-    .map-icon { font-size: 14px; margin-left: 6px; padding: 2px 4px; background: rgba(255,255,255,0.4); border-radius: 4px; }
+    .map-icon {
+      font-size: 14px; margin-left: 6px; padding: 2px 4px;
+      background: rgba(255,255,255,0.4); border-radius: 4px;
+    }
     .tab.active .map-icon { background: rgba(255,255,255,0.2); }
 
-    /* Content — margin-top tăng thêm cho phần stats */
-    .content { margin-top: calc(300px + env(safe-area-inset-top)); padding: 15px; }
+    /* ===================== CONTENT ===================== */
+    /* margin-top tính: title(~50) + search(~130) + stats(~80) + tabs(~50) = ~310px */
+    .content { margin-top: calc(310px + env(safe-area-inset-top)); padding: 15px; }
 
-    /* Cards kết quả tìm kiếm */
+    /* ===================== CARDS TÌM KIẾM ===================== */
     .card {
-      background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px;
-      border-left: 5px solid var(--pharma-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      background: white; border-radius: 12px; padding: 15px;
+      margin-bottom: 12px; border-left: 5px solid var(--pharma-blue);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    .card-name { font-weight: bold; color: var(--pharma-blue); font-size: 1rem; margin-bottom: 8px; line-height: 1.3; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
-    .card-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px; align-items: center; }
+    .card-name {
+      font-weight: bold; color: var(--pharma-blue); font-size: 1rem;
+      margin-bottom: 8px; line-height: 1.3;
+      border-bottom: 1px dashed #eee; padding-bottom: 5px;
+    }
+    .card-row {
+      display: flex; justify-content: space-between;
+      margin-bottom: 6px; font-size: 14px; align-items: center;
+    }
     .label { color: #666; }
-    .calc-box { margin-top: 6px; background: var(--light-blue); color: var(--pharma-blue); padding: 6px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 14px; }
-    .pos-box { margin-top: 8px; border: 1px solid var(--pharma-blue); color: var(--pharma-blue); padding: 6px; border-radius: 6px; text-align: center; font-size: 14px; background: white; }
+    .calc-box {
+      margin-top: 6px; background: var(--light-blue); color: var(--pharma-blue);
+      padding: 6px; border-radius: 6px; text-align: center;
+      font-weight: bold; font-size: 14px;
+    }
+    .pos-box {
+      margin-top: 8px; border: 1px solid var(--pharma-blue);
+      color: var(--pharma-blue); padding: 6px; border-radius: 6px;
+      text-align: center; font-size: 14px; background: white;
+    }
 
-    /* =========================================
-       MODAL SƠ ĐỒ KHO (giữ nguyên)
-       ========================================= */
+    /* ===================== MODAL SƠ ĐỒ KHO ===================== */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.9); z-index: 9999;
       display: none; justify-content: center; align-items: center;
     }
-    .modal-content { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+    .modal-content {
+      position: relative; width: 100%; height: 100%;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
     .modal-header {
-      padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center;
-      background: rgba(0,0,0,0.5); z-index: 10; padding-top: calc(15px + env(safe-area-inset-top));
+      padding: calc(15px + env(safe-area-inset-top)) 15px 15px;
+      color: white; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(0,0,0,0.5); z-index: 10;
     }
     .modal-header-title span { font-weight: bold; font-size: 1.2rem; }
     .modal-header-title small { display: block; font-size: 0.8rem; opacity: 0.8; }
-    .close-modal { font-size: 28px; cursor: pointer; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; }
-    .modal-body { flex: 1; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: none; }
-    .modal-img { max-width: 100%; max-height: 100%; transition: transform 0.1s ease-out; will-change: transform; user-select: none; -webkit-user-drag: none; }
+    .close-modal {
+      font-size: 28px; cursor: pointer;
+      width: 44px; height: 44px;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .modal-body {
+      flex: 1; position: relative; overflow: hidden;
+      display: flex; justify-content: center; align-items: center;
+      touch-action: none;
+    }
+    .modal-img {
+      max-width: 100%; max-height: 100%;
+      transition: transform 0.1s ease-out;
+      will-change: transform; user-select: none; -webkit-user-drag: none;
+    }
 
-    /* =========================================
-       BOTTOM SHEET — Chi tiết vị trí kho
-       ========================================= */
+    /* ===================== BOTTOM SHEET VỊ TRÍ ===================== */
     .vt-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.55); z-index: 8888;
       display: none; align-items: flex-end;
     }
     .vt-overlay.open { display: flex; }
-
     .vt-sheet {
-      background: white; width: 100%; max-height: 82vh;
-      border-radius: 20px 20px 0 0;
-      display: flex; flex-direction: column;
-      overflow: hidden;
+      width: 100%; max-height: 82vh;
+      background: white; border-radius: 20px 20px 0 0;
+      display: flex; flex-direction: column; overflow: hidden;
       padding-bottom: env(safe-area-inset-bottom);
       animation: slideUp 0.22s ease-out;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
     /* Header bottom sheet */
-    .vt-header {
+    .vt-hd {
       padding: 14px 16px 10px; border-bottom: 1px solid #eee;
-      display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-shrink: 0;
     }
-    .vt-header-left h3 { margin: 0 0 5px; font-size: 1.05rem; color: var(--pharma-blue); }
-    .vt-badges { display: flex; gap: 7px; flex-wrap: wrap; }
-    .bdg { padding: 3px 9px; border-radius: 10px; font-size: 12px; font-weight: 700; }
-    .bdg-used  { background: #fff3cd; color: #856404; }
-    .bdg-empty { background: #d1e7dd; color: #0f5132; }
-    .bdg-total { background: var(--light-blue); color: var(--pharma-blue); }
-    .vt-close { font-size: 22px; cursor: pointer; color: #666; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f0f2f5; flex-shrink: 0; }
+    .vt-hd h3 { margin: 0 0 5px; font-size: 1.05rem; color: var(--pharma-blue); }
+    .vt-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .bdg {
+      padding: 3px 9px; border-radius: 10px;
+      font-size: 12px; font-weight: 700;
+    }
+    .bdg-u { background: #fff3cd; color: #856404; }
+    .bdg-e { background: #d1e7dd; color: #0f5132; }
+    .bdg-t { background: var(--light-blue); color: var(--pharma-blue); }
+    .vt-close {
+      font-size: 22px; cursor: pointer; color: #666;
+      width: 34px; height: 34px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: #f0f2f5;
+    }
 
-    /* Filter tabs trong bottom sheet */
-    .vt-filters { display: flex; padding: 9px 12px; gap: 7px; border-bottom: 1px solid #f5f5f5; flex-shrink: 0; }
-    .vt-ftab {
+    /* Filter tabs bottom sheet */
+    .vt-ftabs {
+      display: flex; padding: 9px 12px; gap: 7px;
+      border-bottom: 1px solid #f5f5f5; flex-shrink: 0;
+    }
+    .vt-ft {
       flex: 1; padding: 7px 4px; border-radius: 8px; text-align: center;
       font-size: 12px; font-weight: 700; cursor: pointer;
       border: 1.5px solid #e0e0e0; color: #888; background: white;
     }
-    .vt-ftab.f-all   { border-color: var(--pharma-blue); background: var(--pharma-blue); color: white; }
-    .vt-ftab.f-used  { border-color: var(--warn-orange); background: #fff8f0; color: #c85a00; }
-    .vt-ftab.f-empty { border-color: var(--success-green); background: #f0fff4; color: #186b2e; }
+    .vt-ft.fa { border-color: var(--pharma-blue); background: var(--pharma-blue); color: white; }
+    .vt-ft.fu { border-color: var(--warn-orange); background: #fff8f0; color: #c85a00; }
+    .vt-ft.fe { border-color: var(--success-green); background: #f0fff4; color: #186b2e; }
 
     /* Grid mã vị trí */
     .vt-grid {
       flex: 1; overflow-y: auto; padding: 10px 12px;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; align-content: start;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 6px; align-content: start;
     }
     .vt-chip {
       padding: 9px 4px; border-radius: 8px; text-align: center;
-      font-size: 11px; font-weight: 700; border: 1.5px solid; line-height: 1.3;
+      font-size: 11px; font-weight: 700; border: 1.5px solid;
+      line-height: 1.3;
     }
     .vt-chip.used  { background: #fff8f0; border-color: #fd7e14; color: #c85a00; }
     .vt-chip.empty { background: #f0fff4; border-color: #85d99a; color: #186b2e; }
     .vt-chip .ci   { font-size: 10px; display: block; margin-bottom: 2px; }
-
-    .vt-empty-msg { grid-column: 1/-1; text-align: center; color: #aaa; padding: 30px 0; font-size: 14px; }
+    .vt-empty-msg  { grid-column: 1/-1; text-align: center; color: #aaa; padding: 30px 0; font-size: 14px; }
   </style>
 </head>
 <body>
 
+<!-- ===================== FIXED HEADER ===================== -->
 <div class="fixed-header">
   <div class="app-title">Location Map</div>
 
   <div class="search-area">
+    <!-- Tìm sản phẩm -->
     <div class="input-group">
-      <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <svg class="search-icon" viewBox="0 0 24 24">
+        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      </svg>
       <input type="text" id="prodSearch" placeholder="Tìm sản phẩm" autocomplete="off">
       <span class="clear-btn" id="clearProd" onclick="clearInput('prodSearch')">✕</span>
       <div id="prodSug" class="suggestions"></div>
     </div>
+    <!-- Tìm số lô -->
     <div class="input-group">
-      <svg class="search-icon" viewBox="0 0 24 24"><path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
+      <svg class="search-icon" viewBox="0 0 24 24">
+        <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/>
+      </svg>
       <input type="text" id="batchSearch" placeholder="Nhập số lô" autocomplete="off">
       <span class="clear-btn" id="clearBatch" onclick="clearInput('batchSearch')">✕</span>
       <div id="batchSug" class="suggestions"></div>
@@ -232,28 +290,28 @@
     <button class="btn-reset" onclick="resetAll()">Xóa tất cả</button>
   </div>
 
-  <!-- ====================================================
-       KHO STATS — Hiển thị cố định 9 kho, tách biệt hoàn toàn
-       ==================================================== -->
+  <!-- ===== KHO STATS — 9 kho cố định ===== -->
   <div class="kho-stats-section">
-    <div class="kho-stats-title">Tình trạng sử dụng vị trí</div>
+    <div class="kho-stats-label">Tình trạng sử dụng vị trí</div>
     <div class="kho-stats-row" id="khoStatsRow">
-      <!-- 9 card placeholder, sẽ được cập nhật khi có data -->
-      <div style="font-size:12px;color:#bbb;padding:4px 0">Đang tải...</div>
+      <!-- Placeholder 9 kho — render ngay khi tải trang -->
     </div>
   </div>
 
-  <!-- Tab kho tìm kiếm (giữ nguyên) -->
+  <!-- ===== TAB KHO TÌM KIẾM ===== -->
   <div id="warehouseTabs" class="tab-container">
     <div class="tab active" onclick="selectWH('Tất cả')">Tất cả</div>
   </div>
 </div>
 
+<!-- ===================== CONTENT ===================== -->
 <div class="content" id="resultArea">
-  <div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>
+  <div style="text-align:center; color:#999; margin-top:50px;">
+    Vui lòng tìm sản phẩm hoặc số lô để tra cứu
+  </div>
 </div>
 
-<!-- MODAL SƠ ĐỒ KHO -->
+<!-- ===================== MODAL SƠ ĐỒ KHO ===================== -->
 <div id="mapModal" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-header">
@@ -269,340 +327,355 @@
   </div>
 </div>
 
-<!-- BOTTOM SHEET CHI TIẾT VỊ TRÍ -->
-<div id="vtOverlay" class="vt-overlay" onclick="handleVtOverlayClick(event)">
+<!-- ===================== BOTTOM SHEET VỊ TRÍ ===================== -->
+<div id="vtOverlay" class="vt-overlay" onclick="handleVtClick(event)">
   <div class="vt-sheet" onclick="event.stopPropagation()">
-    <div class="vt-header">
-      <div class="vt-header-left">
+    <div class="vt-hd">
+      <div>
         <h3 id="vtTitle">Kho 3A</h3>
         <div class="vt-badges">
-          <span class="bdg bdg-used"  id="vtBdgUsed">🟡 0 đã dùng</span>
-          <span class="bdg bdg-empty" id="vtBdgEmpty">🟢 0 trống</span>
-          <span class="bdg bdg-total" id="vtBdgTotal">📦 0 tổng</span>
+          <span class="bdg bdg-u" id="vtBU">🟡 0 đã dùng</span>
+          <span class="bdg bdg-e" id="vtBE">🟢 0 trống</span>
+          <span class="bdg bdg-t" id="vtBT">📦 0 tổng</span>
         </div>
       </div>
-      <div class="vt-close" onclick="closeVtSheet()">✕</div>
+      <div class="vt-close" onclick="closeVt()">✕</div>
     </div>
-    <div class="vt-filters">
-      <div class="vt-ftab f-all"  id="ftab-all"   onclick="setVtFilter('all')">Tất cả</div>
-      <div class="vt-ftab"        id="ftab-used"  onclick="setVtFilter('used')">🟡 Đã dùng</div>
-      <div class="vt-ftab"        id="ftab-empty" onclick="setVtFilter('empty')">🟢 Còn trống</div>
+    <div class="vt-ftabs">
+      <div class="vt-ft fa" id="ft-all"   onclick="setFilter('all')">Tất cả</div>
+      <div class="vt-ft"    id="ft-used"  onclick="setFilter('used')">🟡 Đã dùng</div>
+      <div class="vt-ft"    id="ft-empty" onclick="setFilter('empty')">🟢 Còn trống</div>
     </div>
     <div class="vt-grid" id="vtGrid"></div>
   </div>
 </div>
 
 <script>
-  // =========================================
-  // CẤU HÌNH
-  // =========================================
-  const MAP_IMAGES = {
-    "1A": "images/kho1a.png",
-    "3A": "images/kho3a.png",
-    "3B": "images/kho3b.png",
-    "4A": "images/kho4a.png",
-    "4B": "images/kho4b.png",
-    "5A": "images/kho5a.png",
-    "5B": "images/kho5b.png",
-    "6A": "images/kho6a.png",
-    "6B": "images/kho6b.png"
-  };
+// =====================================================
+// CẤU HÌNH — chỉnh sửa 2 biến này nếu cần
+// =====================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwFkON_Tpk_F08M8pnHWiAf-QVBjkv4wegUCyJBxuN1FNtUgNh8LktrkNumbBGNzkVb/exec';
 
-  // ⚠️ THAY URL NÀY BẰNG URL DEPLOY CỦA BẠN
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwFkON_Tpk_F08M8pnHWiAf-QVBjkv4wegUCyJBxuN1FNtUgNh8LktrkNumbBGNzkVb/exec';
+const MAP_IMAGES = {
+  "1A": "images/kho1a.png",
+  "3A": "images/kho3a.png",
+  "3B": "images/kho3b.png",
+  "4A": "images/kho4a.png",
+  "4B": "images/kho4b.png",
+  "5A": "images/kho5a.png",
+  "5B": "images/kho5b.png",
+  "6A": "images/kho6a.png",
+  "6B": "images/kho6b.png"
+};
 
-  // Danh sách 9 kho cố định — KHỚP VỚI WHITELIST TRONG GAS
-  const KHO_LIST = ["1A","3A","3B","4A","4B","5A","5B","6A","6B"];
+// 9 kho cố định — PHẢI khớp với whitelist trong GAS
+const KHO_LIST = ["1A","3A","3B","4A","4B","5A","5B","6A","6B"];
 
-  let allData     = [];
-  let viTriStats  = {};   // Dữ liệu từ ?type=vitri
-  let currentProduct = "";
-  let currentBatch   = "";
-  let currentWH      = "Tất cả";
+// =====================================================
+// STATE
+// =====================================================
+let allData    = [];
+let vtStats    = {};   // { "3A": { total, usedCount, allSlots[], usedSlots[] }, ... }
+let curProd    = "";
+let curBatch   = "";
+let curWH      = "Tất cả";
+let vtKho      = null;
+let vtFilter   = 'all';
 
-  // Trạng thái bottom sheet
-  let vtCurrentKho    = null;
-  let vtCurrentFilter = 'all';
+// =====================================================
+// KHỞI ĐỘNG
+// =====================================================
+window.onload = () => {
+  // 1. Render 9 card placeholder ngay (hiện 0/0)
+  renderStats({});
 
-  // =========================================
-  // KHỞI ĐỘNG — Render placeholder ngay, load data song song
-  // =========================================
-  window.onload = () => {
-    // Render 9 card placeholder ngay lập tức (0/0)
-    renderKhoStats({});
+  // 2. Load cache nếu có — hiện nhanh
+  try {
+    const c1 = localStorage.getItem('pharma_inv');
+    const c2 = localStorage.getItem('pharma_vt');
+    if (c1) allData = JSON.parse(c1);
+    if (c2) { vtStats = JSON.parse(c2); renderStats(vtStats); }
+  } catch(e) {}
 
-    // Load cache nếu có
-    const cached = localStorage.getItem('pharma_cache');
-    if (cached) { allData = JSON.parse(cached); }
-
-    const vtCached = localStorage.getItem('vitri_stats_cache');
-    if (vtCached) {
-      viTriStats = JSON.parse(vtCached);
-      renderKhoStats(viTriStats);
-    }
-
-    // Gọi 2 API song song
-    Promise.all([
-      fetch(GAS_URL).then(r => r.json()),
-      fetch(GAS_URL + '?type=vitri').then(r => r.json())
-    ]).then(([invData, vtData]) => {
-      allData    = invData;
-      viTriStats = vtData;
-      localStorage.setItem('pharma_cache',       JSON.stringify(invData));
-      localStorage.setItem('vitri_stats_cache',  JSON.stringify(vtData));
-      renderKhoStats(viTriStats);
-    }).catch(err => {
-      console.warn('Fetch lỗi:', err);
-      // Đã có cache — không cần báo lỗi nếu cache tồn tại
-    });
-  };
-
-  // =========================================
-  // RENDER 9 CARD KHO STATS (luôn hiển thị đúng 9 kho)
-  // =========================================
-  function renderKhoStats(stats) {
-    const row = document.getElementById('khoStatsRow');
-
-    row.innerHTML = KHO_LIST.map(khoKey => {
-      const d     = stats[khoKey] || { total: 0, usedCount: 0 };
-      const used  = d.usedCount || 0;
-      const total = d.total     || 0;
-      const pct   = total > 0 ? Math.round((used / total) * 100) : 0;
-
-      let pctClass = 'pct-low';
-      if (pct >= 80) pctClass = 'pct-high';
-      else if (pct >= 50) pctClass = 'pct-med';
-
-      return `
-        <div class="kho-stat-card ${pctClass}" onclick="openVtSheet('${khoKey}')">
-          <div class="kc-name">Kho ${khoKey}</div>
-          <div class="kc-ratio">${used}/${total}</div>
-          <div class="kc-bar"><div class="kc-fill" style="width:${pct}%"></div></div>
-        </div>`;
-    }).join('');
-  }
-
-  // =========================================
-  // BOTTOM SHEET — Mở / Đóng / Filter
-  // =========================================
-  function openVtSheet(khoKey) {
-    vtCurrentKho    = khoKey;
-    vtCurrentFilter = 'all';
-
-    const d     = viTriStats[khoKey] || { total: 0, usedCount: 0, allSlots: [], usedSlots: [] };
-    const used  = d.usedCount || 0;
-    const total = d.total     || 0;
-    const empty = total - used;
-
-    document.getElementById('vtTitle').textContent    = `Kho ${khoKey}`;
-    document.getElementById('vtBdgUsed').textContent  = `🟡 ${used} đã dùng`;
-    document.getElementById('vtBdgEmpty').textContent = `🟢 ${empty} trống`;
-    document.getElementById('vtBdgTotal').textContent = `📦 ${total} tổng`;
-
-    // Reset filter tab UI
-    document.getElementById('ftab-all').className   = 'vt-ftab f-all';
-    document.getElementById('ftab-used').className  = 'vt-ftab';
-    document.getElementById('ftab-empty').className = 'vt-ftab';
-
-    renderVtGrid();
-    document.getElementById('vtOverlay').classList.add('open');
-  }
-
-  function closeVtSheet() {
-    document.getElementById('vtOverlay').classList.remove('open');
-  }
-
-  function handleVtOverlayClick(e) {
-    if (e.target === document.getElementById('vtOverlay')) closeVtSheet();
-  }
-
-  function setVtFilter(filter) {
-    vtCurrentFilter = filter;
-    document.getElementById('ftab-all').className   = 'vt-ftab' + (filter === 'all'   ? ' f-all'   : '');
-    document.getElementById('ftab-used').className  = 'vt-ftab' + (filter === 'used'  ? ' f-used'  : '');
-    document.getElementById('ftab-empty').className = 'vt-ftab' + (filter === 'empty' ? ' f-empty' : '');
-    renderVtGrid();
-  }
-
-  function renderVtGrid() {
-    const grid = document.getElementById('vtGrid');
-    const d    = viTriStats[vtCurrentKho] || { allSlots: [], usedSlots: [] };
-
-    const usedSet  = new Set(d.usedSlots || []);
-    const allSlots = d.allSlots || [];
-
-    // Sắp xếp: đã dùng lên trước trong chế độ "all"
-    let slots;
-    if (vtCurrentFilter === 'used') {
-      slots = allSlots.filter(s => usedSet.has(s));
-    } else if (vtCurrentFilter === 'empty') {
-      slots = allSlots.filter(s => !usedSet.has(s));
-    } else {
-      slots = [
-        ...allSlots.filter(s =>  usedSet.has(s)),
-        ...allSlots.filter(s => !usedSet.has(s))
-      ];
-    }
-
-    if (!slots.length) {
-      grid.innerHTML = '<div class="vt-empty-msg">Không có dữ liệu vị trí</div>';
+  // 3. Fetch song song 2 API
+  Promise.all([
+    fetch(GAS_URL)
+      .then(r => { if (!r.ok) throw new Error('inv fail'); return r.json(); }),
+    fetch(GAS_URL + '?type=vitri')
+      .then(r => { if (!r.ok) throw new Error('vt fail'); return r.json(); })
+  ]).then(([inv, vt]) => {
+    // Kiểm tra GAS trả về lỗi dạng { error: "..." }
+    if (vt && vt.error) {
+      console.error('GAS vitri error:', vt.error);
       return;
     }
+    allData = inv;
+    vtStats = vt;
+    localStorage.setItem('pharma_inv', JSON.stringify(inv));
+    localStorage.setItem('pharma_vt',  JSON.stringify(vt));
+    renderStats(vtStats);
+  }).catch(err => {
+    console.warn('Fetch error:', err);
+    // Cache vẫn còn → UI không bị trắng
+  });
+};
 
-    grid.innerHTML = slots.map(slot => {
-      const isUsed = usedSet.has(slot);
-      return `<div class="vt-chip ${isUsed ? 'used' : 'empty'}">
-        <span class="ci">${isUsed ? '🟡' : '🟢'}</span>${slot}
-      </div>`;
-    }).join('');
+// =====================================================
+// RENDER 9 CARD KHO (luôn đúng 9, không bao giờ nhiều hơn)
+// =====================================================
+function renderStats(stats) {
+  const row = document.getElementById('khoStatsRow');
+  row.innerHTML = KHO_LIST.map(k => {
+    const d     = (stats && stats[k]) ? stats[k] : { total: 0, usedCount: 0 };
+    const used  = Number(d.usedCount) || 0;
+    const total = Number(d.total)     || 0;
+    const pct   = total > 0 ? Math.round(used / total * 100) : 0;
+    const cls   = pct >= 80 ? 'hi' : pct >= 50 ? 'md' : 'lo';
+    return `<div class="kc ${cls}" onclick="openVt('${k}')">
+      <div class="kc-name">Kho ${k}</div>
+      <div class="kc-ratio">${used}/${total}</div>
+      <div class="kc-bar"><div class="kc-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// =====================================================
+// BOTTOM SHEET — Mở / Đóng / Filter / Render grid
+// =====================================================
+function openVt(kho) {
+  vtKho    = kho;
+  vtFilter = 'all';
+  const d     = (vtStats && vtStats[kho]) ? vtStats[kho] : { total:0, usedCount:0, allSlots:[], usedSlots:[] };
+  const used  = Number(d.usedCount) || 0;
+  const total = Number(d.total)     || 0;
+  const empty = total - used;
+
+  document.getElementById('vtTitle').textContent = `Kho ${kho}`;
+  document.getElementById('vtBU').textContent = `🟡 ${used} đã dùng`;
+  document.getElementById('vtBE').textContent = `🟢 ${empty} trống`;
+  document.getElementById('vtBT').textContent = `📦 ${total} tổng`;
+
+  // Reset filter tabs
+  document.getElementById('ft-all').className   = 'vt-ft fa';
+  document.getElementById('ft-used').className  = 'vt-ft';
+  document.getElementById('ft-empty').className = 'vt-ft';
+
+  renderVtGrid();
+  document.getElementById('vtOverlay').classList.add('open');
+}
+
+function closeVt() {
+  document.getElementById('vtOverlay').classList.remove('open');
+}
+function handleVtClick(e) {
+  if (e.target === document.getElementById('vtOverlay')) closeVt();
+}
+
+function setFilter(f) {
+  vtFilter = f;
+  document.getElementById('ft-all').className   = 'vt-ft' + (f==='all'   ? ' fa' : '');
+  document.getElementById('ft-used').className  = 'vt-ft' + (f==='used'  ? ' fu' : '');
+  document.getElementById('ft-empty').className = 'vt-ft' + (f==='empty' ? ' fe' : '');
+  renderVtGrid();
+}
+
+function renderVtGrid() {
+  const grid = document.getElementById('vtGrid');
+  const d    = (vtStats && vtStats[vtKho]) ? vtStats[vtKho] : { allSlots:[], usedSlots:[] };
+  const usedSet  = new Set(d.usedSlots || []);
+  const all      = d.allSlots || [];
+
+  let slots;
+  if      (vtFilter === 'used')  slots = all.filter(s =>  usedSet.has(s));
+  else if (vtFilter === 'empty') slots = all.filter(s => !usedSet.has(s));
+  else slots = [
+    ...all.filter(s =>  usedSet.has(s)),
+    ...all.filter(s => !usedSet.has(s))
+  ];
+
+  if (!slots.length) {
+    grid.innerHTML = '<div class="vt-empty-msg">Không có dữ liệu vị trí</div>';
+    return;
   }
+  grid.innerHTML = slots.map(s => {
+    const u = usedSet.has(s);
+    return `<div class="vt-chip ${u ? 'used' : 'empty'}">
+      <span class="ci">${u ? '🟡' : '🟢'}</span>${s}
+    </div>`;
+  }).join('');
+}
 
-  // =========================================
-  // TÌM KIẾM SẢN PHẨM / SỐ LÔ (giữ nguyên)
-  // =========================================
-  const prodInput  = document.getElementById('prodSearch');
-  const batchInput = document.getElementById('batchSearch');
-  const clearProd  = document.getElementById('clearProd');
-  const clearBatch = document.getElementById('clearBatch');
+// =====================================================
+// TÌM KIẾM SẢN PHẨM / SỐ LÔ (giữ nguyên 100%)
+// =====================================================
+const prodInput  = document.getElementById('prodSearch');
+const batchInput = document.getElementById('batchSearch');
+const clearProd  = document.getElementById('clearProd');
+const clearBatch = document.getElementById('clearBatch');
 
-  function resetAll() {
-    prodInput.value = ""; batchInput.value = "";
-    clearProd.style.display = 'none'; clearBatch.style.display = 'none';
-    currentProduct = ""; currentBatch = ""; currentWH = "Tất cả";
-    document.getElementById('prodSug').style.display  = 'none';
-    document.getElementById('batchSug').style.display = 'none';
-    document.getElementById('resultArea').innerHTML    = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
+function resetAll() {
+  prodInput.value = ''; batchInput.value = '';
+  clearProd.style.display = 'none'; clearBatch.style.display = 'none';
+  curProd = ''; curBatch = ''; curWH = 'Tất cả';
+  document.getElementById('prodSug').style.display  = 'none';
+  document.getElementById('batchSug').style.display = 'none';
+  document.getElementById('resultArea').innerHTML    = '<div style="text-align:center;color:#999;margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
+  document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
+}
+
+prodInput.oninput = e => {
+  const val = e.target.value.trim().toLowerCase();
+  clearProd.style.display = val ? 'block' : 'none';
+  const sug = document.getElementById('prodSug');
+  if (!val) { sug.style.display = 'none'; curProd = ''; updateUI(); return; }
+  const list = [...new Set(allData.map(i => i.Ten_SP))]
+    .filter(n => n && n.toLowerCase().includes(val)).slice(0, 15);
+  sug.innerHTML = list.map(n =>
+    `<div class="sug-item" onclick="selProd('${n.replace(/'/g,"\\'")}')"> ${n}</div>`
+  ).join('');
+  sug.style.display = list.length ? 'block' : 'none';
+};
+
+function selProd(name) {
+  curProd = name; prodInput.value = name;
+  clearProd.style.display = 'block';
+  document.getElementById('prodSug').style.display = 'none';
+  curWH = 'Tất cả'; updateUI();
+}
+
+batchInput.oninput = e => {
+  const val = e.target.value.trim().toLowerCase();
+  clearBatch.style.display = val ? 'block' : 'none';
+  const sug = document.getElementById('batchSug');
+  const src = curProd ? allData.filter(i => i.Ten_SP === curProd) : allData;
+  const list = [...new Set(src.map(i => i.So_Lo))]
+    .filter(b => b && String(b).toLowerCase().includes(val)).slice(0, 10);
+  sug.innerHTML = list.map(b =>
+    `<div class="sug-item" onclick="selBatch('${String(b).replace(/'/g,"\\'")}')"> ${b}</div>`
+  ).join('');
+  sug.style.display = list.length ? 'block' : 'none';
+  curBatch = val; updateUI();
+};
+
+function selBatch(batch) {
+  curBatch = batch; batchInput.value = batch;
+  clearBatch.style.display = 'block';
+  document.getElementById('batchSug').style.display = 'none';
+  updateUI();
+}
+
+function clearInput(id) {
+  document.getElementById(id).value = '';
+  if (id === 'prodSearch') { curProd  = ''; clearProd.style.display  = 'none'; }
+  else                     { curBatch = ''; clearBatch.style.display = 'none'; }
+  if (!curProd && !curBatch) {
+    document.getElementById('resultArea').innerHTML    = '<div style="text-align:center;color:#999;margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
     document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
+  } else updateUI();
+}
+
+function updateUI() {
+  if (!curProd && !curBatch) return;
+  let filtered = allData;
+  if (curProd)  filtered = filtered.filter(i => i.Ten_SP === curProd);
+  if (curBatch) filtered = filtered.filter(i => String(i.So_Lo).toLowerCase().includes(curBatch.toLowerCase()));
+
+  const warehouses = ['Tất cả', ...new Set(filtered.map(i => i.Ten_Kho))];
+  document.getElementById('warehouseTabs').innerHTML = warehouses.map(w => {
+    const wk  = w.trim().toUpperCase();
+    const dn  = wk === 'TẤT CẢ' ? 'Tất cả' : wk === 'CXL' ? 'CXL' : `Kho ${wk}`;
+    const ico = MAP_IMAGES[wk] ? `<span class="map-icon" onclick="openMap(event,'${wk}')">🗺️</span>` : '';
+    return `<div class="tab ${w===curWH?'active':''}" onclick="selectWH('${w}')"><span>${dn}</span>${ico}</div>`;
+  }).join('');
+
+  if (!warehouses.includes(curWH)) curWH = 'Tất cả';
+  if (curWH !== 'Tất cả') filtered = filtered.filter(i => i.Ten_Kho === curWH);
+  renderCards(filtered);
+}
+
+function selectWH(wh) { curWH = wh; updateUI(); }
+
+// =====================================================
+// RENDER CARDS KẾT QUẢ TÌM KIẾM
+// =====================================================
+function renderCards(data) {
+  const area = document.getElementById('resultArea');
+  if (!data.length) {
+    area.innerHTML = '<center style="padding:20px;color:#666;">Không tìm thấy dữ liệu phù hợp</center>';
+    return;
   }
-
-  prodInput.oninput = (e) => {
-    const val = e.target.value.trim().toLowerCase();
-    clearProd.style.display = val ? 'block' : 'none';
-    const sugBox = document.getElementById('prodSug');
-    if (!val) { sugBox.style.display = 'none'; currentProduct = ""; updateUI(); return; }
-    const list = [...new Set(allData.map(i => i.Ten_SP))].filter(n => n.toLowerCase().includes(val)).slice(0, 15);
-    sugBox.innerHTML = list.map(n => `<div class="sug-item" onclick="selectProd('${n.replace(/'/g, "\\'")}')">${n}</div>`).join('');
-    sugBox.style.display = list.length ? 'block' : 'none';
-  };
-
-  function selectProd(name) {
-    currentProduct = name; prodInput.value = name;
-    clearProd.style.display = 'block'; document.getElementById('prodSug').style.display = 'none';
-    currentWH = "Tất cả"; updateUI();
-  }
-
-  batchInput.oninput = (e) => {
-    const val = e.target.value.trim().toLowerCase();
-    clearBatch.style.display = val ? 'block' : 'none';
-    const sugBox = document.getElementById('batchSug');
-    let dataSource = currentProduct ? allData.filter(i => i.Ten_SP === currentProduct) : allData;
-    const list = [...new Set(dataSource.map(i => i.So_Lo))].filter(b => String(b).toLowerCase().includes(val)).slice(0, 10);
-    sugBox.innerHTML = list.map(b => `<div class="sug-item" onclick="selectBatch('${String(b).replace(/'/g, "\\'")}')">${b}</div>`).join('');
-    sugBox.style.display = list.length ? 'block' : 'none';
-    currentBatch = val; updateUI();
-  };
-
-  function selectBatch(batch) {
-    currentBatch = batch; batchInput.value = batch;
-    clearBatch.style.display = 'block'; document.getElementById('batchSug').style.display = 'none';
-    updateUI();
-  }
-
-  function clearInput(id) {
-    document.getElementById(id).value = "";
-    if (id === 'prodSearch') { currentProduct = ""; clearProd.style.display = 'none'; }
-    else { currentBatch = ""; clearBatch.style.display = 'none'; }
-    if (!currentProduct && !currentBatch) {
-      document.getElementById('resultArea').innerHTML    = '<div style="text-align:center; color:#999; margin-top:50px;">Vui lòng tìm sản phẩm hoặc số lô để tra cứu</div>';
-      document.getElementById('warehouseTabs').innerHTML = '<div class="tab active" onclick="selectWH(\'Tất cả\')">Tất cả</div>';
-    } else { updateUI(); }
-  }
-
-  function updateUI() {
-    if (!currentProduct && !currentBatch) return;
-    let filtered = allData;
-    if (currentProduct) filtered = filtered.filter(i => i.Ten_SP === currentProduct);
-    if (currentBatch)   filtered = filtered.filter(i => String(i.So_Lo).toLowerCase().includes(currentBatch.toLowerCase()));
-
-    const warehouses = ["Tất cả", ...new Set(filtered.map(i => i.Ten_Kho))];
-    const tabContainer = document.getElementById('warehouseTabs');
-    tabContainer.innerHTML = warehouses.map(w => {
-      let whKey      = w.trim().toUpperCase();
-      let displayName = (whKey === "TẤT CẢ") ? "Tất cả" : (whKey === "CXL" ? "CXL" : `Kho ${whKey}`);
-      let mapIconHtml = MAP_IMAGES[whKey] ? `<span class="map-icon" onclick="openMapModal(event, '${whKey}')">🗺️</span>` : "";
-      return `<div class="tab ${w === currentWH ? 'active' : ''}" onclick="selectWH('${w}')"><span>${displayName}</span>${mapIconHtml}</div>`;
-    }).join('');
-
-    if (!warehouses.includes(currentWH)) currentWH = "Tất cả";
-    if (currentWH !== "Tất cả") filtered = filtered.filter(i => i.Ten_Kho === currentWH);
-    renderCards(filtered);
-  }
-
-  function selectWH(wh) { currentWH = wh; updateUI(); }
-
-  // =========================================
-  // ENGINE ZOOM & PAN SƠ ĐỒ KHO (giữ nguyên)
-  // =========================================
-  const modal     = document.getElementById('mapModal');
-  const img       = document.getElementById('mapImage');
-  const container = document.getElementById('zoomContainer');
-  let scale = 1, lastScale = 1, posX = 0, posY = 0, startX = 0, startY = 0, isDragging = false;
-
-  function openMapModal(event, whKey) {
-    event.stopPropagation();
-    document.getElementById('mapTitle').textContent = `Sơ đồ Kho ${whKey}`;
-    img.src = MAP_IMAGES[whKey]; modal.style.display = 'flex'; resetZoom();
-  }
-  function closeMapModal() { modal.style.display = 'none'; img.src = ""; }
-  function resetZoom()     { scale = 1; posX = 0; posY = 0; updateTransform(); }
-  function updateTransform() { img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
-
-  container.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].clientX - posX; startY = e.touches[0].clientY - posY; }
-    else if (e.touches.length === 2) { isDragging = false; lastScale = scale; container.initialDistance = getDistance(e.touches); }
-  });
-  container.addEventListener('touchmove', e => {
-    e.preventDefault();
-    if (e.touches.length === 1 && isDragging) { posX = e.touches[0].clientX - startX; posY = e.touches[0].clientY - startY; }
-    else if (e.touches.length === 2) { const dist = getDistance(e.touches); scale = Math.min(Math.max(1, lastScale * (dist / container.initialDistance)), 5); }
-    updateTransform();
-  }, { passive: false });
-  container.addEventListener('touchend', () => { isDragging = false; lastScale = scale; });
-  function getDistance(touches) { return Math.hypot(touches[0].pageX - touches[1].pageX, touches[0].pageY - touches[1].pageY); }
-
-  // =========================================
-  // RENDER CARDS KẾT QUẢ TÌM KIẾM (giữ nguyên)
-  // =========================================
-  function renderCards(data) {
-    const area = document.getElementById('resultArea');
-    if (data.length === 0) { area.innerHTML = '<center style="padding:20px; color:#666;">Không tìm thấy dữ liệu phù hợp</center>'; return; }
-    area.innerHTML = data.map(item => {
-      let packStr = "";
-      if (item.So_Luong_Goi_Thung && item.So_Luong_Goi_Thung !== "Chưa có") {
-        const q = parseInt(item.So_Luong_Goi_Thung), t = parseInt(item.Ton_HT);
+  area.innerHTML = data.map(item => {
+    let packStr = '';
+    if (item.So_Luong_Goi_Thung && item.So_Luong_Goi_Thung !== 'Chưa có') {
+      const q = parseInt(item.So_Luong_Goi_Thung);
+      const t = parseInt(item.Ton_HT);
+      if (q > 0 && t > 0) {
         const thung = Math.floor(t / q), le = t % q;
-        packStr = thung > 0 ? `${thung} thùng` : "";
-        if (le > 0) packStr += (packStr ? " + " : "") + `${le} hộp`;
+        packStr = thung > 0 ? `${thung} thùng` : '';
+        if (le > 0) packStr += (packStr ? ' + ' : '') + `${le} hộp`;
       }
-      return `<div class="card">
-        <div class="card-name">${item.Ten_SP || "--"}</div>
-        <div class="card-row"><span class="label">Số lô:</span> <b>${item.So_Lo || "--"}</b></div>
-        <div class="card-row"><span class="label">Hạn dùng:</span> <b>${item.Han_Dung || "--"}</b></div>
-        <div class="card-row"><span class="label">Quy cách:</span> <b>${item.Quy_Cach || ""} + Thùng ${item.So_Luong_Goi_Thung || "..."} hộp</b></div>
-        <div class="card-row"><span class="label">Số lượng:</span> <b>${item.Ton_HT ? item.Ton_HT.toLocaleString('vi-VN') : "--"}</b></div>
-        ${packStr ? `<div class="calc-box">${packStr}</div>` : ''}
-        <div class="pos-box">Vị trí: <b>${item.Vi_Tri || "--"}</b></div>
-      </div>`;
-    }).join('');
-  }
+    }
+    return `<div class="card">
+      <div class="card-name">${item.Ten_SP || '--'}</div>
+      <div class="card-row"><span class="label">Số lô:</span>    <b>${item.So_Lo   || '--'}</b></div>
+      <div class="card-row"><span class="label">Hạn dùng:</span> <b>${item.Han_Dung|| '--'}</b></div>
+      <div class="card-row"><span class="label">Quy cách:</span> <b>${item.Quy_Cach||''} + Thùng ${item.So_Luong_Goi_Thung||'...'} hộp</b></div>
+      <div class="card-row"><span class="label">Số lượng:</span> <b>${item.Ton_HT ? Number(item.Ton_HT).toLocaleString('vi-VN') : '--'}</b></div>
+      ${packStr ? `<div class="calc-box">${packStr}</div>` : ''}
+      <div class="pos-box">Vị trí: <b>${item.Vi_Tri || '--'}</b></div>
+    </div>`;
+  }).join('');
+}
 
-  // Auto hide suggestions
-  document.addEventListener('click', e => {
-    if (e.target !== prodInput  && !document.getElementById('prodSug').contains(e.target))  document.getElementById('prodSug').style.display  = 'none';
-    if (e.target !== batchInput && !document.getElementById('batchSug').contains(e.target)) document.getElementById('batchSug').style.display = 'none';
-  });
-  prodInput.addEventListener('focus',  () => { if (prodInput.value.trim())  document.getElementById('prodSug').style.display  = 'block'; });
-  batchInput.addEventListener('focus', () => { if (batchInput.value.trim()) document.getElementById('batchSug').style.display = 'block'; });
+// =====================================================
+// MODAL SƠ ĐỒ KHO — Zoom & Pan
+// =====================================================
+const modal     = document.getElementById('mapModal');
+const imgEl     = document.getElementById('mapImage');
+const zoomWrap  = document.getElementById('zoomContainer');
+let sc=1, lsc=1, px=0, py=0, sx=0, sy=0, drag=false;
+
+function openMap(event, wk) {
+  event.stopPropagation();
+  document.getElementById('mapTitle').textContent = `Sơ đồ Kho ${wk}`;
+  imgEl.src = MAP_IMAGES[wk];
+  modal.style.display = 'flex';
+  sc=1; lsc=1; px=0; py=0;
+  imgEl.style.transform = '';
+}
+function closeMapModal() { modal.style.display = 'none'; imgEl.src = ''; }
+
+zoomWrap.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    drag = true; sx = e.touches[0].clientX - px; sy = e.touches[0].clientY - py;
+  } else if (e.touches.length === 2) {
+    drag = false; lsc = sc;
+    zoomWrap._d0 = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+  }
+});
+zoomWrap.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 1 && drag) {
+    px = e.touches[0].clientX - sx; py = e.touches[0].clientY - sy;
+  } else if (e.touches.length === 2) {
+    const d = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+    sc = Math.min(Math.max(1, lsc * d / zoomWrap._d0), 5);
+  }
+  imgEl.style.transform = `translate(${px}px,${py}px) scale(${sc})`;
+}, { passive: false });
+zoomWrap.addEventListener('touchend', () => { drag = false; lsc = sc; });
+
+// =====================================================
+// AUTO HIDE SUGGESTIONS
+// =====================================================
+document.addEventListener('click', e => {
+  if (e.target !== prodInput  && !document.getElementById('prodSug').contains(e.target))
+    document.getElementById('prodSug').style.display  = 'none';
+  if (e.target !== batchInput && !document.getElementById('batchSug').contains(e.target))
+    document.getElementById('batchSug').style.display = 'none';
+});
+prodInput.addEventListener('focus',  () => { if (prodInput.value.trim())  document.getElementById('prodSug').style.display  = 'block'; });
+batchInput.addEventListener('focus', () => { if (batchInput.value.trim()) document.getElementById('batchSug').style.display = 'block'; });
 </script>
 </body>
 </html>
