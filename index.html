@@ -109,125 +109,125 @@
     .vt-ft.fu { border-color:var(--warn-orange); background:#fff8f0; color:#c85a00; }
     .vt-ft.fe { border-color:var(--success-green); background:#f0fff4; color:#186b2e; }
 
-    /* Grid vị trí */
-    .vt-grid { flex:1; overflow-y:auto; padding:10px 12px; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; align-content:start; }
+    /* =====================================================
+       GRID VỊ TRÍ — container chính
+       ===================================================== */
+    .vt-grid {
+      flex: 1; overflow-y: auto;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .vt-empty-msg { text-align:center; color:#aaa; padding:30px 0; font-size:14px; }
 
-    /* ===================================================
-       Ô VỊ TRÍ — MÀU NỀN PHÂN BIỆT, KHÔNG DÙNG ICON
-       =================================================== */
+    /* =====================================================
+       HEADER PHÂN ĐOẠN DÃY — dùng chung cho cả thường và khung
+       ===================================================== */
+    .vt-row-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 2px 5px; margin-top: 2px;
+    }
+    .vt-row-header:first-child { padding-top: 4px; margin-top: 0; }
+    .vt-row-title {
+      font-size: 11px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .vt-row-line { flex: 1; height: 1px; }
 
-    /* Ô ĐÃ DÙNG — nền cam nhạt, border cam */
+    /* Header màu xanh — vị trí thường (L/N) */
+    .vt-row-header.rh-normal .vt-row-title { color: #0056b3; }
+    .vt-row-header.rh-normal .vt-row-line  { background: #b8d0f0; }
+    /* Header màu tím — vị trí khung/tầng */
+    .vt-row-header.rh-frame  .vt-row-title { color: #7b3fa0; }
+    .vt-row-header.rh-frame  .vt-row-line  { background: #d8b8f0; }
+
+    /* Header màu xám — phân đoạn phần KHUNG/TẦNG tổng */
+    .vt-section-sep {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 2px 5px; margin-top: 6px;
+      border-top: 2px dashed #e0d0f5;
+    }
+    .vt-section-sep-title {
+      font-size: 12px; font-weight: 900;
+      color: #7b3fa0; letter-spacing: 0.5px; white-space: nowrap;
+    }
+    .vt-section-sep-line { flex: 1; height: 2px; background: #e0d0f5; }
+
+    /* =====================================================
+       CHIP ROWS — hàng chip bên trong mỗi dãy
+       ===================================================== */
+    /* Hàng 3 cột — vị trí thường */
+    .chip-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-bottom: 4px;
+    }
+    /* Hàng 2 cột — vị trí khung/tầng (trái=tầng1, phải=tầng2) */
+    .chip-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 4px;
+    }
+
+    /* =====================================================
+       Ô VỊ TRÍ — kích thước đồng đều dùng/trống
+       ===================================================== */
+    .vt-chip {
+      border-radius: 10px;
+      padding: 8px 6px;
+      /* min-height cố định để ô trống = ô có tồn */
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Ô ĐÃ DÙNG — nền cam nhạt */
     .vt-chip.used {
       background: #fff3e0;
       border: 2px solid #fd7e14;
-      border-radius: 10px;
-      padding: 8px 6px;
-      cursor: default;
     }
     .vt-chip.used .slot-code {
       font-size: 12px; font-weight: 800;
-      color: #c85a00;
-      display: block; margin-bottom: 5px;
-      text-align: center;
+      color: #c85a00; display: block;
+      margin-bottom: 5px; text-align: center;
     }
-    /* Thông tin sản phẩm trong ô đã dùng */
-    .slot-info { font-size: 10px; color: #555; line-height: 1.4; }
-    .slot-info .sp-name { font-weight: 700; color: #333; display:block; margin-bottom:2px; word-break:break-word; }
-    .slot-info .sp-row  { display:flex; justify-content:space-between; gap:2px; }
-    .slot-info .sp-lo   { color:#0056b3; font-weight:600; }
-    .slot-info .sp-ton  { color:var(--success-green); font-weight:600; }
-    .slot-info .sp-dv   { color:#888; }
-
-    /* Ô TRỐNG — nền xanh nhạt, border xanh */
+    /* Ô TRỐNG — nền xanh nhạt */
     .vt-chip.empty {
       background: #f0fff4;
       border: 2px solid #85d99a;
-      border-radius: 10px;
-      padding: 10px 6px;
-      display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 42px;
     }
     .vt-chip.empty .slot-code {
       font-size: 12px; font-weight: 700;
-      color: #186b2e; text-align:center;
+      color: #186b2e; text-align: center;
     }
 
-    .vt-empty-msg { grid-column:1/-1; text-align:center; color:#aaa; padding:30px 0; font-size:14px; }
-
-    /* Nhiều sản phẩm cùng vị trí */
-    .slot-multi { border-top:1px dashed #ffc07a; margin-top:4px; padding-top:4px; }
-    /* Dòng quy đổi thùng/hộp — nổi bật trong ô đã dùng */
-    .sp-pack {
-      margin-top: 4px;
-      padding: 3px 6px;
-      background: rgba(253,126,20,0.12);
-      border-radius: 5px;
-      font-size: 11px;
-      font-weight: 800;
-      color: #a04000;
-      text-align: center;
-    }
-    /* Dòng quy cách: X hộp/thùng */
-    .sp-qc {
-      margin-top: 3px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #6c757d;
-      text-align: center;
-    }
+    /* =====================================================
+       NỘI DUNG BÊN TRONG Ô ĐÃ DÙNG
+       ===================================================== */
+    .slot-info { font-size: 10px; color: #555; line-height: 1.4; }
+    .slot-info .sp-name { font-weight: 700; color: #333; display: block; margin-bottom: 2px; word-break: break-word; }
+    .slot-info .sp-lo   { color: #0056b3; font-weight: 600; font-size: 10px; display: block; }
+    .sp-qc { margin-top: 3px; font-size: 10px; font-weight: 600; color: #6c757d; text-align: center; }
     .sp-qc span { color: #0056b3; font-weight: 700; }
-    /* Dòng tổng tồn hộp */
-    .sp-ton-total {
-      margin-top: 2px;
-      font-size: 10px;
-      font-weight: 700;
-      color: #186b2e;
-      text-align: center;
+    .sp-ton-total { margin-top: 2px; font-size: 10px; font-weight: 700; color: #186b2e; text-align: center; }
+    .sp-pack {
+      margin-top: 4px; padding: 3px 5px;
+      background: rgba(253,126,20,0.12); border-radius: 5px;
+      font-size: 11px; font-weight: 800; color: #a04000; text-align: center;
     }
+    .slot-multi { border-top: 1px dashed #ffc07a; margin-top: 4px; padding-top: 4px; }
 
-    /* ===================================================
-       PHÂN ĐOẠN VỊ TRÍ: THƯỜNG vs KHUNG/TẦNG
-       =================================================== */
-
-    /* Header phân đoạn bên trong grid */
-    .vt-section-header {
-      grid-column: 1 / -1;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 2px 4px;
-      margin-top: 4px;
-    }
-    .vt-section-header:first-child { margin-top: 0; }
-    .vt-section-title {
-      font-size: 11px; font-weight: 800;
-      text-transform: uppercase; letter-spacing: 0.6px;
-      white-space: nowrap;
-    }
-    .vt-section-line {
-      flex: 1; height: 1px; background: #e0e0e0;
-    }
-    /* Màu header từng loại */
-    .vt-section-header.sec-normal .vt-section-title { color: #0056b3; }
-    .vt-section-header.sec-normal .vt-section-line  { background: #b8d0f0; }
-    .vt-section-header.sec-frame  .vt-section-title { color: #7b3fa0; }
-    .vt-section-header.sec-frame  .vt-section-line  { background: #d8b8f0; }
-
-    /* Ô khung/tầng chiếm 2 cột — vì có thêm dòng tầng */
-    .vt-chip.frame-slot {
-      grid-column: span 1;
-    }
-    /* Badge tầng trong ô khung */
+    /* Badge khung·tầng */
     .slot-frame-badge {
-      display: inline-block;
-      background: #f3e8ff;
-      color: #7b3fa0;
-      border-radius: 4px;
-      font-size: 10px; font-weight: 700;
-      padding: 1px 5px;
-      margin-bottom: 4px;
+      display: block; text-align: center;
+      background: #f3e8ff; color: #7b3fa0;
+      border-radius: 4px; font-size: 10px; font-weight: 700;
+      padding: 1px 5px; margin-bottom: 4px;
     }
 
   </style>
@@ -405,18 +405,33 @@ function setFilter(f) {
 
 // ============================================================
 // HELPER — Phân loại mã vị trí
-// Trả về: 'normal' (L/N) hoặc 'frame' (số.tầng như 1.1, 2.3)
-// VD: 3A-1-L1  → normal
-//     3A-1-N3  → normal
-//     3A-1-1.1 → frame (khung 1 tầng 1)
-//     3A-2-3.2 → frame (khung 3 tầng 2)
+// 'normal': phần cuối là L/N + số  → 3A-1-L1, 3A-2-N3
+// 'frame' : phần cuối là số.số    → 3A-1-1.1, 3A-2-3.2
 // ============================================================
 function slotType(code) {
-  // Lấy phần sau dấu gạch cuối: "3A-1-L1" → "L1", "3A-1-1.1" → "1.1"
   const parts = code.split('-');
   const last  = parts[parts.length - 1] || '';
-  // Là khung/tầng nếu phần cuối chứa dấu chấm và đều là số
-  return /^\d+\.\d+$/.test(last) ? 'frame' : 'normal';
+  return /^[0-9]+\.[0-9]+$/.test(last) ? 'frame' : 'normal';
+}
+
+// ============================================================
+// HELPER — Parse mã vị trí thành object dễ sort/group
+// normal: { row:1, type:'L', num:1 }
+// frame : { row:1, khung:1, tang:1 }
+// ============================================================
+function parseSlot(code) {
+  const parts = code.split('-');
+  const last  = parts[parts.length - 1] || '';
+  const row   = parseInt(parts[parts.length - 2], 10) || 0;
+  if (slotType(code) === 'frame') {
+    const [k, t] = last.split('.').map(Number);
+    return { row, khung: k || 0, tang: t || 0 };
+  }
+  return {
+    row,
+    type: last[0] ? last[0].toUpperCase() : 'L',
+    num : parseInt(last.slice(1), 10) || 0
+  };
 }
 
 // ============================================================
@@ -499,9 +514,65 @@ function renderChip(slot, isUsed, slotInfo, isFrame) {
 }
 
 // ============================================================
+// RENDER CHIP — HTML cho 1 ô vị trí
+// ============================================================
+function chipHtml(slot, isUsed, slotInfo, isFrame) {
+  const info = slotInfo[slot];
+  let infoHtml = '';
+
+  if (isUsed && info) {
+    const items = Array.isArray(info) ? info : [info];
+    infoHtml = items.map((it, idx) => {
+      const name    = it.Ten_SP || '';
+      const dv      = it.Don_Vi ? `(${it.Don_Vi})` : '';
+      const lo      = it.So_Lo  ? `Lô: ${it.So_Lo}` : '';
+      const tonHT   = Number(it.Ton_HT)   || 0;
+      const quyCach = Number(it.Quy_Cach) || 0;
+      let packStr = '';
+      if (quyCach > 0 && tonHT > 0) {
+        const thung = Math.floor(tonHT / quyCach), hop = tonHT % quyCach;
+        if (thung > 0 && hop > 0) packStr = `${thung} Thùng + ${hop} hộp`;
+        else if (thung > 0)       packStr = `${thung} Thùng`;
+        else                      packStr = `${hop} hộp`;
+      } else if (tonHT > 0) {
+        packStr = `${tonHT.toLocaleString('vi-VN')} hộp`;
+      }
+      const qcStr  = quyCach > 0 ? `QC: <span>${quyCach} hộp/thùng</span>` : '';
+      const tonStr = tonHT   > 0 ? `Tồn: ${tonHT.toLocaleString('vi-VN')} hộp` : '';
+      return `${idx > 0 ? '<div class="slot-multi">' : ''}
+        <div class="slot-info">
+          <span class="sp-name">${name} ${dv}</span>
+          <span class="sp-lo">${lo}</span>
+          ${qcStr   ? `<div class="sp-qc">${qcStr}</div>`         : ''}
+          ${tonStr  ? `<div class="sp-ton-total">${tonStr}</div>` : ''}
+          ${packStr ? `<div class="sp-pack">${packStr}</div>`     : ''}
+        </div>${idx > 0 ? '</div>' : ''}`;
+    }).join('');
+  }
+
+  // Badge khung·tầng cho ô frame
+  let frameBadge = '';
+  if (isFrame) {
+    const p = slot.split('-'), last = p[p.length - 1];
+    const [k, t] = last.split('.');
+    frameBadge = `<span class="slot-frame-badge">Khung ${k} · Tầng ${t}</span>`;
+  }
+
+  if (isUsed) {
+    return `<div class="vt-chip used">${frameBadge}<span class="slot-code">${slot}</span>${infoHtml}</div>`;
+  }
+  return `<div class="vt-chip empty">${frameBadge}<span class="slot-code">${slot}</span></div>`;
+}
+
+// ============================================================
 // RENDER GRID VỊ TRÍ
-// Thứ tự: vị trí thường (L/N) trước → vị trí khung/tầng sau
-// Trong mỗi nhóm: đã dùng trước, trống sau
+// Layout:
+//   A) Vị trí thường — ngắt đoạn theo dãy (3A-1, 3A-2, ...)
+//      trong mỗi dãy: L hết trước, N sau, tăng dần
+//      grid 3 cột, kích thước ô đồng đều (min-height cố định)
+//   B) Vị trí khung/tầng — phân cách hẳn với phần A
+//      ngắt đoạn theo dãy, mỗi dãy theo khung tăng dần
+//      grid 2 cột: cột trái = tầng .1, cột phải = tầng .2
 // ============================================================
 function renderVtGrid() {
   const grid = document.getElementById('vtGrid');
@@ -512,89 +583,134 @@ function renderVtGrid() {
   const slotInfo = d.slotInfo || {};
   const all      = d.allSlots || [];
 
-  // --- Lọc theo filter tab ---
-  let filtered;
-  if      (vtFilter === 'used')  filtered = all.filter(s =>  usedSet.has(s));
-  else if (vtFilter === 'empty') filtered = all.filter(s => !usedSet.has(s));
-  else                           filtered = all;
+  // Lọc theo filter tab
+  let pool;
+  if      (vtFilter === 'used')  pool = all.filter(s =>  usedSet.has(s));
+  else if (vtFilter === 'empty') pool = all.filter(s => !usedSet.has(s));
+  else                           pool = [...all];
 
-  if (!filtered.length) {
+  if (!pool.length) {
     grid.innerHTML = '<div class="vt-empty-msg">Không có dữ liệu vị trí</div>';
     return;
   }
 
-  // --- Tách 2 nhóm ---
-  const normalSlots = filtered.filter(s => slotType(s) === 'normal');
-  const frameSlots  = filtered.filter(s => slotType(s) === 'frame');
+  // Tách 2 nhóm
+  const normals = pool.filter(s => slotType(s) === 'normal');
+  const frames  = pool.filter(s => slotType(s) === 'frame');
 
-  // --- Hàm sort vị trí thường: L trước N, trong mỗi loại tăng dần theo số ---
-  // VD: 3A-1-L1, 3A-1-L2, 3A-2-L1 ... rồi 3A-1-N1, 3A-1-N2 ...
-  function sortNormal(a, b) {
-    const parse = code => {
-      const parts = code.split('-');
-      const last  = parts[parts.length - 1];         // "L1", "N3"
-      const type  = last[0].toUpperCase();            // 'L' hoặc 'N'
-      const num   = parseInt(last.slice(1), 10) || 0; // số phía sau
-      // Phần dãy (phần giữa): "3A-1-L1" → dãy = 1
-      const row   = parseInt(parts[parts.length - 2], 10) || 0;
-      return { type, row, num };
-    };
-    const pa = parse(a), pb = parse(b);
-    // L < N
+  // Sort helper
+  const cmpNormal = (a, b) => {
+    const pa = parseSlot(a), pb = parseSlot(b);
+    if (pa.row  !== pb.row)  return pa.row  - pb.row;
     if (pa.type !== pb.type) return pa.type === 'L' ? -1 : 1;
-    // Cùng loại: sắp xếp theo dãy rồi theo số
-    if (pa.row !== pb.row) return pa.row - pb.row;
     return pa.num - pb.num;
-  }
-
-  // --- Hàm sort vị trí khung/tầng: theo dãy → khung → tầng tăng dần ---
-  // VD: 3A-1-1.1, 3A-1-1.2, 3A-1-2.1, 3A-2-1.1 ...
-  function sortFrame(a, b) {
-    const parse = code => {
-      const parts  = code.split('-');
-      const last   = parts[parts.length - 1];         // "1.1"
-      const [k, t] = last.split('.').map(Number);      // khung, tầng
-      const row    = parseInt(parts[parts.length - 2], 10) || 0;
-      return { row, khung: k || 0, tang: t || 0 };
-    };
-    const pa = parse(a), pb = parse(b);
+  };
+  const cmpFrame = (a, b) => {
+    const pa = parseSlot(a), pb = parseSlot(b);
     if (pa.row   !== pb.row)   return pa.row   - pb.row;
     if (pa.khung !== pb.khung) return pa.khung - pb.khung;
     return pa.tang - pb.tang;
-  }
+  };
 
-  // Trong mỗi nhóm: sort theo thứ tự đúng, đã dùng trước — trống sau
-  // (giữ nguyên đã dùng/trống riêng rồi sort từng phần)
-  const sortGroup = (arr, sortFn) => [
-    ...arr.filter(s =>  usedSet.has(s)).sort(sortFn),
-    ...arr.filter(s => !usedSet.has(s)).sort(sortFn)
-  ];
-
-  const sortedNormal = sortGroup(normalSlots, sortNormal);
-  const sortedFrame  = sortGroup(frameSlots,  sortFrame);
+  normals.sort(cmpNormal);
+  frames.sort(cmpFrame);
 
   let html = '';
 
-  // ---- PHẦN 1: Vị trí thường (L/N) ----
-  if (sortedNormal.length) {
-    const usedCnt  = sortedNormal.filter(s =>  usedSet.has(s)).length;
-    const emptyCnt = sortedNormal.filter(s => !usedSet.has(s)).length;
-    html += `<div class="vt-section-header sec-normal">
-      <span class="vt-section-title">Vị trí thường · ${usedCnt} dùng / ${emptyCnt} trống</span>
-      <div class="vt-section-line"></div>
-    </div>`;
-    html += sortedNormal.map(s => renderChip(s, usedSet.has(s), slotInfo, false)).join('');
+  // ==============================================
+  // PHẦN A: Vị trí thường — nhóm theo dãy
+  // ==============================================
+  if (normals.length) {
+    // Gom theo dãy: { "1": [...], "2": [...] }
+    const byRow = {};
+    normals.forEach(s => {
+      const row = parseSlot(s).row;
+      if (!byRow[row]) byRow[row] = [];
+      byRow[row].push(s);
+    });
+    const rowKeys = Object.keys(byRow).map(Number).sort((a,b) => a-b);
+
+    rowKeys.forEach(row => {
+      const slots = byRow[row];
+      const usedCnt  = slots.filter(s =>  usedSet.has(s)).length;
+      const emptyCnt = slots.filter(s => !usedSet.has(s)).length;
+
+      html += `<div class="vt-row-header rh-normal">
+        <span class="vt-row-title">Dãy ${row} · ${usedCnt} dùng / ${emptyCnt} trống</span>
+        <div class="vt-row-line"></div>
+      </div>`;
+
+      // Chia thành hàng 3 ô, wrap bằng chip-row-3
+      // Gom L trước, N sau trong từng dãy (đã sort rồi)
+      let rowHtml = '<div class="chip-row-3">';
+      slots.forEach((s, i) => {
+        if (i > 0 && i % 3 === 0) rowHtml += '</div><div class="chip-row-3">';
+        rowHtml += chipHtml(s, usedSet.has(s), slotInfo, false);
+      });
+      // Nếu hàng cuối không đủ 3 ô → thêm placeholder để giữ kích thước
+      const rem = slots.length % 3;
+      if (rem === 1) rowHtml += '<div class="vt-chip" style="visibility:hidden"></div><div class="vt-chip" style="visibility:hidden"></div>';
+      if (rem === 2) rowHtml += '<div class="vt-chip" style="visibility:hidden"></div>';
+      rowHtml += '</div>';
+      html += rowHtml;
+    });
   }
 
-  // ---- PHẦN 2: Vị trí khung/tầng ----
-  if (sortedFrame.length) {
-    const usedCnt  = sortedFrame.filter(s =>  usedSet.has(s)).length;
-    const emptyCnt = sortedFrame.filter(s => !usedSet.has(s)).length;
-    html += `<div class="vt-section-header sec-frame">
-      <span class="vt-section-title">Vị trí khung/tầng · ${usedCnt} dùng / ${emptyCnt} trống</span>
-      <div class="vt-section-line"></div>
+  // ==============================================
+  // PHẦN B: Vị trí khung/tầng — phân cách hẳn
+  // ==============================================
+  if (frames.length) {
+    // Đường phân cách tổng
+    const fUsed  = frames.filter(s =>  usedSet.has(s)).length;
+    const fEmpty = frames.filter(s => !usedSet.has(s)).length;
+    html += `<div class="vt-section-sep">
+      <span class="vt-section-sep-title">Vị trí Khung/Tầng · ${fUsed} dùng / ${fEmpty} trống</span>
+      <div class="vt-section-sep-line"></div>
     </div>`;
-    html += sortedFrame.map(s => renderChip(s, usedSet.has(s), slotInfo, true)).join('');
+
+    // Gom theo dãy
+    const byRow = {};
+    frames.forEach(s => {
+      const row = parseSlot(s).row;
+      if (!byRow[row]) byRow[row] = [];
+      byRow[row].push(s);
+    });
+    const rowKeys = Object.keys(byRow).map(Number).sort((a,b) => a-b);
+
+    rowKeys.forEach(row => {
+      const slots = byRow[row];
+      const usedCnt  = slots.filter(s =>  usedSet.has(s)).length;
+      const emptyCnt = slots.filter(s => !usedSet.has(s)).length;
+
+      html += `<div class="vt-row-header rh-frame">
+        <span class="vt-row-title">Dãy ${row} · ${usedCnt} dùng / ${emptyCnt} trống</span>
+        <div class="vt-row-line"></div>
+      </div>`;
+
+      // Gom theo khung: { 1: [slot1, slot2], 2: [...] }
+      // slot1 = tầng .1 (trái), slot2 = tầng .2 (phải)
+      const byKhung = {};
+      slots.forEach(s => {
+        const p = parseSlot(s);
+        if (!byKhung[p.khung]) byKhung[p.khung] = { t1: null, t2: null };
+        if (p.tang === 1) byKhung[p.khung].t1 = s;
+        else              byKhung[p.khung].t2 = s;
+      });
+      const khungKeys = Object.keys(byKhung).map(Number).sort((a,b) => a-b);
+
+      // Mỗi khung = 1 hàng 2 cột
+      khungKeys.forEach(k => {
+        const { t1, t2 } = byKhung[k];
+        html += '<div class="chip-row-2">';
+        html += t1
+          ? chipHtml(t1, usedSet.has(t1), slotInfo, true)
+          : '<div class="vt-chip" style="visibility:hidden"></div>';
+        html += t2
+          ? chipHtml(t2, usedSet.has(t2), slotInfo, true)
+          : '<div class="vt-chip" style="visibility:hidden"></div>';
+        html += '</div>';
+      });
+    });
   }
 
   grid.innerHTML = html;
