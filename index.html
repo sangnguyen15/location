@@ -418,14 +418,17 @@ function slotType(code) {
 // HELPER — Parse mã vị trí thành object dễ sort/group
 // normal: { row:1, type:'L', num:1 }
 // frame : { row:1, khung:1, tang:1 }
+// Dùng parseInt(...,10) ép số thực để sort số đúng (1,2,3...10,11)
+// không bị sort string ("1","10","2","3")
 // ============================================================
 function parseSlot(code) {
   const parts = code.split('-');
   const last  = parts[parts.length - 1] || '';
+  // row luôn là Number
   const row   = parseInt(parts[parts.length - 2], 10) || 0;
   if (slotType(code) === 'frame') {
-    const [k, t] = last.split('.').map(Number);
-    return { row, khung: k || 0, tang: t || 0 };
+    const dot = last.split('.');
+    return { row, khung: parseInt(dot[0], 10) || 0, tang: parseInt(dot[1], 10) || 0 };
   }
   return {
     row,
@@ -621,14 +624,15 @@ function renderVtGrid() {
   // PHẦN A: Vị trí thường — nhóm theo dãy
   // ==============================================
   if (normals.length) {
-    // Gom theo dãy: { "1": [...], "2": [...] }
+    // Gom theo dãy — key là Number để sort số đúng thứ tự
     const byRow = {};
     normals.forEach(s => {
-      const row = parseSlot(s).row;
+      const row = parseSlot(s).row; // đã là Number từ parseInt
       if (!byRow[row]) byRow[row] = [];
       byRow[row].push(s);
     });
-    const rowKeys = Object.keys(byRow).map(Number).sort((a,b) => a-b);
+    // sort số thực: 1,2,3,4...10,11 (không phải "1","10","11","2")
+    const rowKeys = Object.keys(byRow).map(Number).sort((a, b) => a - b);
 
     rowKeys.forEach(row => {
       const slots = byRow[row];
@@ -668,14 +672,15 @@ function renderVtGrid() {
       <div class="vt-section-sep-line"></div>
     </div>`;
 
-    // Gom theo dãy
+    // Gom theo dãy — key là Number để sort số đúng thứ tự
     const byRow = {};
     frames.forEach(s => {
-      const row = parseSlot(s).row;
+      const row = parseSlot(s).row; // đã là Number từ parseInt
       if (!byRow[row]) byRow[row] = [];
       byRow[row].push(s);
     });
-    const rowKeys = Object.keys(byRow).map(Number).sort((a,b) => a-b);
+    // sort số thực: 1,2,3...10,11 đúng thứ tự
+    const rowKeys = Object.keys(byRow).map(Number).sort((a, b) => a - b);
 
     rowKeys.forEach(row => {
       const slots = byRow[row];
@@ -696,7 +701,8 @@ function renderVtGrid() {
         if (p.tang === 1) byKhung[p.khung].t1 = s;
         else              byKhung[p.khung].t2 = s;
       });
-      const khungKeys = Object.keys(byKhung).map(Number).sort((a,b) => a-b);
+      // sort khung số thực tăng dần
+      const khungKeys = Object.keys(byKhung).map(Number).sort((a, b) => a - b);
 
       // Mỗi khung = 1 hàng 2 cột
       khungKeys.forEach(k => {
