@@ -186,6 +186,50 @@
       color: #186b2e;
       text-align: center;
     }
+
+    /* ===================================================
+       PHÂN ĐOẠN VỊ TRÍ: THƯỜNG vs KHUNG/TẦNG
+       =================================================== */
+
+    /* Header phân đoạn bên trong grid */
+    .vt-section-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 2px 4px;
+      margin-top: 4px;
+    }
+    .vt-section-header:first-child { margin-top: 0; }
+    .vt-section-title {
+      font-size: 11px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      white-space: nowrap;
+    }
+    .vt-section-line {
+      flex: 1; height: 1px; background: #e0e0e0;
+    }
+    /* Màu header từng loại */
+    .vt-section-header.sec-normal .vt-section-title { color: #0056b3; }
+    .vt-section-header.sec-normal .vt-section-line  { background: #b8d0f0; }
+    .vt-section-header.sec-frame  .vt-section-title { color: #7b3fa0; }
+    .vt-section-header.sec-frame  .vt-section-line  { background: #d8b8f0; }
+
+    /* Ô khung/tầng chiếm 2 cột — vì có thêm dòng tầng */
+    .vt-chip.frame-slot {
+      grid-column: span 1;
+    }
+    /* Badge tầng trong ô khung */
+    .slot-frame-badge {
+      display: inline-block;
+      background: #f3e8ff;
+      color: #7b3fa0;
+      border-radius: 4px;
+      font-size: 10px; font-weight: 700;
+      padding: 1px 5px;
+      margin-bottom: 4px;
+    }
+
   </style>
 </head>
 <body>
@@ -360,7 +404,104 @@ function setFilter(f) {
 }
 
 // ============================================================
-// RENDER GRID VỊ TRÍ — màu nền ô, hiển thị SP cho ô đã dùng
+// HELPER — Phân loại mã vị trí
+// Trả về: 'normal' (L/N) hoặc 'frame' (số.tầng như 1.1, 2.3)
+// VD: 3A-1-L1  → normal
+//     3A-1-N3  → normal
+//     3A-1-1.1 → frame (khung 1 tầng 1)
+//     3A-2-3.2 → frame (khung 3 tầng 2)
+// ============================================================
+function slotType(code) {
+  // Lấy phần sau dấu gạch cuối: "3A-1-L1" → "L1", "3A-1-1.1" → "1.1"
+  const parts = code.split('-');
+  const last  = parts[parts.length - 1] || '';
+  // Là khung/tầng nếu phần cuối chứa dấu chấm và đều là số
+  return /^\d+\.\d+$/.test(last) ? 'frame' : 'normal';
+}
+
+// ============================================================
+// HELPER — Render 1 ô vị trí (dùng chung cho cả 2 loại)
+// ============================================================
+function renderChip(slot, isUsed, slotInfo, isFrame) {
+  const extraClass = isFrame ? ' frame-slot' : '';
+
+  if (!isUsed) {
+    // Ô TRỐNG
+    if (isFrame) {
+      // Tách khung.tầng để hiển thị badge
+      const parts = slot.split('-');
+      const last  = parts[parts.length - 1];      // "1.1"
+      const [khung, tang] = last.split('.');
+      const badge = `<span class="slot-frame-badge">Khung ${khung} · Tầng ${tang}</span>`;
+      return `<div class="vt-chip empty${extraClass}">
+        ${badge}
+        <span class="slot-code">${slot}</span>
+      </div>`;
+    }
+    return `<div class="vt-chip empty${extraClass}">
+      <span class="slot-code">${slot}</span>
+    </div>`;
+  }
+
+  // Ô ĐÃ DÙNG
+  const info = slotInfo[slot];
+  let infoHtml = '';
+
+  if (info) {
+    const items = Array.isArray(info) ? info : [info];
+    infoHtml = items.map((it, idx) => {
+      const name    = it.Ten_SP || '';
+      const dv      = it.Don_Vi ? `(${it.Don_Vi})` : '';
+      const lo      = it.So_Lo  ? `Lô: ${it.So_Lo}` : '';
+      const tonHT   = Number(it.Ton_HT)   || 0;
+      const quyCach = Number(it.Quy_Cach) || 0;
+
+      let packStr = '';
+      if (quyCach > 0 && tonHT > 0) {
+        const thung = Math.floor(tonHT / quyCach);
+        const hop   = tonHT % quyCach;
+        if (thung > 0 && hop > 0) packStr = `${thung} Thùng + ${hop} hộp`;
+        else if (thung > 0)       packStr = `${thung} Thùng`;
+        else                      packStr = `${hop} hộp`;
+      } else if (tonHT > 0) {
+        packStr = `${tonHT.toLocaleString('vi-VN')} hộp`;
+      }
+
+      const qcStr  = quyCach > 0 ? `QC: <span>${quyCach} hộp/thùng</span>` : '';
+      const tonStr = tonHT   > 0 ? `Tồn: ${tonHT.toLocaleString('vi-VN')} hộp` : '';
+
+      return `${idx > 0 ? '<div class="slot-multi">' : ''}
+        <div class="slot-info">
+          <span class="sp-name">${name} ${dv}</span>
+          <div class="sp-row"><span class="sp-lo">${lo}</span></div>
+          ${qcStr   ? `<div class="sp-qc">${qcStr}</div>`         : ''}
+          ${tonStr  ? `<div class="sp-ton-total">${tonStr}</div>` : ''}
+          ${packStr ? `<div class="sp-pack">${packStr}</div>`     : ''}
+        </div>
+        ${idx > 0 ? '</div>' : ''}`;
+    }).join('');
+  }
+
+  // Với ô đã dùng loại frame: thêm badge khung/tầng
+  let frameBadge = '';
+  if (isFrame) {
+    const parts = slot.split('-');
+    const last  = parts[parts.length - 1];
+    const [khung, tang] = last.split('.');
+    frameBadge = `<span class="slot-frame-badge">Khung ${khung} · Tầng ${tang}</span>`;
+  }
+
+  return `<div class="vt-chip used${extraClass}">
+    ${frameBadge}
+    <span class="slot-code">${slot}</span>
+    ${infoHtml}
+  </div>`;
+}
+
+// ============================================================
+// RENDER GRID VỊ TRÍ
+// Thứ tự: vị trí thường (L/N) trước → vị trí khung/tầng sau
+// Trong mỗi nhóm: đã dùng trước, trống sau
 // ============================================================
 function renderVtGrid() {
   const grid = document.getElementById('vtGrid');
@@ -371,75 +512,92 @@ function renderVtGrid() {
   const slotInfo = d.slotInfo || {};
   const all      = d.allSlots || [];
 
-  let slots;
-  if      (vtFilter === 'used')  slots = all.filter(s =>  usedSet.has(s));
-  else if (vtFilter === 'empty') slots = all.filter(s => !usedSet.has(s));
-  else slots = [
-    ...all.filter(s =>  usedSet.has(s)),   // đã dùng lên trước
-    ...all.filter(s => !usedSet.has(s))
-  ];
+  // --- Lọc theo filter tab ---
+  let filtered;
+  if      (vtFilter === 'used')  filtered = all.filter(s =>  usedSet.has(s));
+  else if (vtFilter === 'empty') filtered = all.filter(s => !usedSet.has(s));
+  else                           filtered = all;
 
-  if (!slots.length) {
+  if (!filtered.length) {
     grid.innerHTML = '<div class="vt-empty-msg">Không có dữ liệu vị trí</div>';
     return;
   }
 
-  grid.innerHTML = slots.map(slot => {
-    const isUsed = usedSet.has(slot);
-    if (!isUsed) {
-      // Ô TRỐNG — chỉ hiển thị mã
-      return `<div class="vt-chip empty">
-        <span class="slot-code">${slot}</span>
-      </div>`;
-    }
+  // --- Tách 2 nhóm ---
+  const normalSlots = filtered.filter(s => slotType(s) === 'normal');
+  const frameSlots  = filtered.filter(s => slotType(s) === 'frame');
 
-    // Ô ĐÃ DÙNG — hiển thị mã + thông tin SP + quy đổi thùng/hộp
-    const info = slotInfo[slot];
-    let infoHtml = '';
+  // --- Hàm sort vị trí thường: L trước N, trong mỗi loại tăng dần theo số ---
+  // VD: 3A-1-L1, 3A-1-L2, 3A-2-L1 ... rồi 3A-1-N1, 3A-1-N2 ...
+  function sortNormal(a, b) {
+    const parse = code => {
+      const parts = code.split('-');
+      const last  = parts[parts.length - 1];         // "L1", "N3"
+      const type  = last[0].toUpperCase();            // 'L' hoặc 'N'
+      const num   = parseInt(last.slice(1), 10) || 0; // số phía sau
+      // Phần dãy (phần giữa): "3A-1-L1" → dãy = 1
+      const row   = parseInt(parts[parts.length - 2], 10) || 0;
+      return { type, row, num };
+    };
+    const pa = parse(a), pb = parse(b);
+    // L < N
+    if (pa.type !== pb.type) return pa.type === 'L' ? -1 : 1;
+    // Cùng loại: sắp xếp theo dãy rồi theo số
+    if (pa.row !== pb.row) return pa.row - pb.row;
+    return pa.num - pb.num;
+  }
 
-    if (info) {
-      const items = Array.isArray(info) ? info : [info];
-      infoHtml = items.map((it, idx) => {
-        const name    = it.Ten_SP || '';
-        const dv      = it.Don_Vi ? `(${it.Don_Vi})` : '';
-        const lo      = it.So_Lo  ? `Lô: ${it.So_Lo}` : '';
-        const tonHT   = Number(it.Ton_HT)   || 0;
-        const quyCach = Number(it.Quy_Cach) || 0;
+  // --- Hàm sort vị trí khung/tầng: theo dãy → khung → tầng tăng dần ---
+  // VD: 3A-1-1.1, 3A-1-1.2, 3A-1-2.1, 3A-2-1.1 ...
+  function sortFrame(a, b) {
+    const parse = code => {
+      const parts  = code.split('-');
+      const last   = parts[parts.length - 1];         // "1.1"
+      const [k, t] = last.split('.').map(Number);      // khung, tầng
+      const row    = parseInt(parts[parts.length - 2], 10) || 0;
+      return { row, khung: k || 0, tang: t || 0 };
+    };
+    const pa = parse(a), pb = parse(b);
+    if (pa.row   !== pb.row)   return pa.row   - pb.row;
+    if (pa.khung !== pb.khung) return pa.khung - pb.khung;
+    return pa.tang - pb.tang;
+  }
 
-        // Tính số thùng + hộp lẻ
-        let packStr = '';
-        if (quyCach > 0 && tonHT > 0) {
-          const thung = Math.floor(tonHT / quyCach);
-          const hop   = tonHT % quyCach;
-          if (thung > 0 && hop > 0) packStr = `${thung} Thùng + ${hop} hộp`;
-          else if (thung > 0)       packStr = `${thung} Thùng`;
-          else                      packStr = `${hop} hộp`;
-        } else if (tonHT > 0) {
-          packStr = `${tonHT.toLocaleString('vi-VN')} hộp`;
-        }
+  // Trong mỗi nhóm: sort theo thứ tự đúng, đã dùng trước — trống sau
+  // (giữ nguyên đã dùng/trống riêng rồi sort từng phần)
+  const sortGroup = (arr, sortFn) => [
+    ...arr.filter(s =>  usedSet.has(s)).sort(sortFn),
+    ...arr.filter(s => !usedSet.has(s)).sort(sortFn)
+  ];
 
-        // Quy cách: X hộp/thùng
-        const qcStr   = quyCach > 0 ? `QC: <span>${quyCach} hộp/thùng</span>` : '';
-        // Tổng tồn hộp
-        const tonStr  = tonHT  > 0 ? `Tồn: ${tonHT.toLocaleString('vi-VN')} hộp` : '';
+  const sortedNormal = sortGroup(normalSlots, sortNormal);
+  const sortedFrame  = sortGroup(frameSlots,  sortFrame);
 
-        return `${idx > 0 ? '<div class="slot-multi">' : ''}
-          <div class="slot-info">
-            <span class="sp-name">${name} ${dv}</span>
-            <div class="sp-row"><span class="sp-lo">${lo}</span></div>
-            ${qcStr    ? `<div class="sp-qc">${qcStr}</div>`           : ''}
-            ${tonStr   ? `<div class="sp-ton-total">${tonStr}</div>`   : ''}
-            ${packStr  ? `<div class="sp-pack">${packStr}</div>`       : ''}
-          </div>
-          ${idx > 0 ? '</div>' : ''}`;
-      }).join('');
-    }
+  let html = '';
 
-    return `<div class="vt-chip used">
-      <span class="slot-code">${slot}</span>
-      ${infoHtml}
+  // ---- PHẦN 1: Vị trí thường (L/N) ----
+  if (sortedNormal.length) {
+    const usedCnt  = sortedNormal.filter(s =>  usedSet.has(s)).length;
+    const emptyCnt = sortedNormal.filter(s => !usedSet.has(s)).length;
+    html += `<div class="vt-section-header sec-normal">
+      <span class="vt-section-title">Vị trí thường · ${usedCnt} dùng / ${emptyCnt} trống</span>
+      <div class="vt-section-line"></div>
     </div>`;
-  }).join('');
+    html += sortedNormal.map(s => renderChip(s, usedSet.has(s), slotInfo, false)).join('');
+  }
+
+  // ---- PHẦN 2: Vị trí khung/tầng ----
+  if (sortedFrame.length) {
+    const usedCnt  = sortedFrame.filter(s =>  usedSet.has(s)).length;
+    const emptyCnt = sortedFrame.filter(s => !usedSet.has(s)).length;
+    html += `<div class="vt-section-header sec-frame">
+      <span class="vt-section-title">Vị trí khung/tầng · ${usedCnt} dùng / ${emptyCnt} trống</span>
+      <div class="vt-section-line"></div>
+    </div>`;
+    html += sortedFrame.map(s => renderChip(s, usedSet.has(s), slotInfo, true)).join('');
+  }
+
+  grid.innerHTML = html;
 }
 
 // ============================================================
