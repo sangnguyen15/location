@@ -158,6 +158,17 @@
 
     /* Nhiều sản phẩm cùng vị trí */
     .slot-multi { border-top:1px dashed #ffc07a; margin-top:4px; padding-top:4px; }
+    /* Dòng quy đổi thùng/hộp — nổi bật trong ô đã dùng */
+    .sp-pack {
+      margin-top: 4px;
+      padding: 3px 6px;
+      background: rgba(253,126,20,0.12);
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #a04000;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -365,24 +376,38 @@ function renderVtGrid() {
       </div>`;
     }
 
-    // Ô ĐÃ DÙNG — hiển thị mã + thông tin SP
+    // Ô ĐÃ DÙNG — hiển thị mã + thông tin SP + quy đổi thùng/hộp
     const info = slotInfo[slot];
     let infoHtml = '';
 
     if (info) {
       const items = Array.isArray(info) ? info : [info];
       infoHtml = items.map((it, idx) => {
-        const name = it.Ten_SP || '';
-        const dv   = it.Don_Vi ? `(${it.Don_Vi})` : '';
-        const lo   = it.So_Lo  ? `Lô: ${it.So_Lo}` : '';
-        const ton  = it.Ton_HT !== undefined ? `${Number(it.Ton_HT).toLocaleString('vi-VN')}` : '';
+        const name    = it.Ten_SP || '';
+        const dv      = it.Don_Vi ? `(${it.Don_Vi})` : '';
+        const lo      = it.So_Lo  ? `Lô: ${it.So_Lo}` : '';
+        const tonHT   = Number(it.Ton_HT)   || 0;
+        const quyCach = Number(it.Quy_Cach) || 0;
+
+        // Tính số thùng + hộp lẻ
+        let packStr = '';
+        if (quyCach > 0 && tonHT > 0) {
+          const thung = Math.floor(tonHT / quyCach);
+          const hop   = tonHT % quyCach;
+          if (thung > 0 && hop > 0) packStr = `${thung} Thùng + ${hop} hộp`;
+          else if (thung > 0)       packStr = `${thung} Thùng`;
+          else                      packStr = `${hop} hộp`;
+        } else if (tonHT > 0) {
+          packStr = `${tonHT.toLocaleString('vi-VN')} hộp`;
+        }
+
         return `${idx > 0 ? '<div class="slot-multi">' : ''}
           <div class="slot-info">
             <span class="sp-name">${name} ${dv}</span>
             <div class="sp-row">
               <span class="sp-lo">${lo}</span>
-              <span class="sp-ton">${ton}</span>
             </div>
+            ${packStr ? `<div class="sp-pack">${packStr}</div>` : ''}
           </div>
           ${idx > 0 ? '</div>' : ''}`;
       }).join('');
