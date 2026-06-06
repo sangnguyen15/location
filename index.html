@@ -569,13 +569,9 @@ function chipHtml(slot, isUsed, slotInfo, isFrame) {
 
 // ============================================================
 // RENDER GRID VỊ TRÍ
-// Layout:
-//   A) Vị trí thường — ngắt đoạn theo dãy (3A-1, 3A-2, ...)
-//      trong mỗi dãy: L hết trước, N sau, tăng dần
-//      grid 3 cột, kích thước ô đồng đều (min-height cố định)
-//   B) Vị trí khung/tầng — phân cách hẳn với phần A
-//      ngắt đoạn theo dãy, mỗi dãy theo khung tăng dần
-//      grid 2 cột: cột trái = tầng .1, cột phải = tầng .2
+// Logic: Gom TẤT CẢ slots theo DÃY trước (Map số → tăng dần)
+//   Trong mỗi dãy: thường (L→N) hiển thị trước, khung/tầng sau
+//   → Đảm bảo dãy 1,2,3,4... đúng thứ tự dù dãy chỉ có frame
 // ============================================================
 function renderVtGrid() {
   const grid = document.getElementById('vtGrid');
@@ -597,104 +593,77 @@ function renderVtGrid() {
     return;
   }
 
-  // Tách 2 nhóm
-  const normals = pool.filter(s => slotType(s) === 'normal');
-  const frames  = pool.filter(s => slotType(s) === 'frame');
+  // ── BƯỚC 1: Gom tất cả vào Map<rowNumber, {normals[], frames[]}> ──
+  const byRow = new Map();
+  pool.forEach(s => {
+    const p   = parseSlot(s);
+    const row = p.row;
+    if (!byRow.has(row)) byRow.set(row, { normals: [], frames: [] });
+    if (slotType(s) === 'frame') byRow.get(row).frames.push(s);
+    else                         byRow.get(row).normals.push(s);
+  });
 
-  // Sort helper
+  // Sort dãy theo số tăng dần (Map giữ nguyên kiểu Number)
+  const rowKeys = Array.from(byRow.keys()).sort((a, b) => a - b);
+
+  // ── Sort helpers ──
   const cmpNormal = (a, b) => {
     const pa = parseSlot(a), pb = parseSlot(b);
-    if (pa.row  !== pb.row)  return pa.row  - pb.row;
-    if (pa.type !== pb.type) return pa.type === 'L' ? -1 : 1;
+    if (pa.type !== pb.type) return pa.type === 'L' ? -1 : 1; // L trước N
     return pa.num - pb.num;
   };
   const cmpFrame = (a, b) => {
     const pa = parseSlot(a), pb = parseSlot(b);
-    if (pa.row   !== pb.row)   return pa.row   - pb.row;
     if (pa.khung !== pb.khung) return pa.khung - pb.khung;
     return pa.tang - pb.tang;
   };
 
-  normals.sort(cmpNormal);
-  frames.sort(cmpFrame);
-
+  // ── BƯỚC 2: Render từng dãy ──
   let html = '';
 
-  // ==============================================
-  // PHẦN A: Vị trí thường — nhóm theo dãy
-  // ==============================================
-  if (normals.length) {
-    // Dùng Map để key Number không bị coerce thành String
-    const byRow = new Map();
-    normals.forEach(s => {
-      const row = parseSlot(s).row;
-      if (!byRow.has(row)) byRow.set(row, []);
-      byRow.get(row).push(s);
-    });
-    // Sort các key số tăng dần: 1,2,3,4...10,11
-    const rowKeys = Array.from(byRow.keys()).sort((a, b) => a - b);
+  rowKeys.forEach(row => {
+    const { normals, frames } = byRow.get(row);
+    normals.sort(cmpNormal);
+    frames.sort(cmpFrame);
 
-    rowKeys.forEach(row => {
-      const slots = byRow.get(row);
-      const usedCnt  = slots.filter(s =>  usedSet.has(s)).length;
-      const emptyCnt = slots.filter(s => !usedSet.has(s)).length;
+    const usedCnt  = [...normals, ...frames].filter(s =>  usedSet.has(s)).length;
+    const emptyCnt = [...normals, ...frames].filter(s => !usedSet.has(s)).length;
 
-      html += `<div class="vt-row-header rh-normal">
-        <span class="vt-row-title">Dãy ${row} · ${usedCnt} dùng / ${emptyCnt} trống</span>
-        <div class="vt-row-line"></div>
-      </div>`;
+    // Header dãy — màu xanh nếu có thường, tím nếu chỉ có frame
+    const hClass = normals.length > 0 ? 'rh-normal' : 'rh-frame';
+    html += `<div class="vt-row-header ${hClass}">
+      <span class="vt-row-title">Dãy ${row} · ${usedCnt} dùng / ${emptyCnt} trống</span>
+      <div class="vt-row-line"></div>
+    </div>`;
 
-      // Chia thành hàng 3 ô, wrap bằng chip-row-3
-      // Gom L trước, N sau trong từng dãy (đã sort rồi)
+    // ── 2A: Vị trí thường (L/N) — grid 3 cột ──
+    if (normals.length) {
       let rowHtml = '<div class="chip-row-3">';
-      slots.forEach((s, i) => {
+      normals.forEach((s, i) => {
         if (i > 0 && i % 3 === 0) rowHtml += '</div><div class="chip-row-3">';
         rowHtml += chipHtml(s, usedSet.has(s), slotInfo, false);
       });
-      // Nếu hàng cuối không đủ 3 ô → thêm placeholder để giữ kích thước
-      const rem = slots.length % 3;
+      // Placeholder giữ kích thước ô đồng đều
+      const rem = normals.length % 3;
       if (rem === 1) rowHtml += '<div class="vt-chip" style="visibility:hidden"></div><div class="vt-chip" style="visibility:hidden"></div>';
       if (rem === 2) rowHtml += '<div class="vt-chip" style="visibility:hidden"></div>';
       rowHtml += '</div>';
       html += rowHtml;
-    });
-  }
+    }
 
-  // ==============================================
-  // PHẦN B: Vị trí khung/tầng — phân cách hẳn
-  // ==============================================
-  if (frames.length) {
-    // Đường phân cách tổng
-    const fUsed  = frames.filter(s =>  usedSet.has(s)).length;
-    const fEmpty = frames.filter(s => !usedSet.has(s)).length;
-    html += `<div class="vt-section-sep">
-      <span class="vt-section-sep-title">Vị trí Khung/Tầng · ${fUsed} dùng / ${fEmpty} trống</span>
-      <div class="vt-section-sep-line"></div>
-    </div>`;
+    // ── 2B: Vị trí khung/tầng — grid 2 cột, trái=.1 phải=.2 ──
+    if (frames.length) {
+      // Nếu trong dãy vừa có thường vừa có frame → thêm sub-header nhỏ
+      if (normals.length > 0) {
+        html += `<div class="vt-row-header rh-frame" style="padding-top:6px;margin-top:2px;">
+          <span class="vt-row-title" style="font-size:10px;">Khung/Tầng</span>
+          <div class="vt-row-line"></div>
+        </div>`;
+      }
 
-    // Dùng Map để key Number không bị coerce thành String
-    const byRow = new Map();
-    frames.forEach(s => {
-      const row = parseSlot(s).row;
-      if (!byRow.has(row)) byRow.set(row, []);
-      byRow.get(row).push(s);
-    });
-    const rowKeys = Array.from(byRow.keys()).sort((a, b) => a - b);
-
-    rowKeys.forEach(row => {
-      const slots = byRow.get(row);
-      const usedCnt  = slots.filter(s =>  usedSet.has(s)).length;
-      const emptyCnt = slots.filter(s => !usedSet.has(s)).length;
-
-      html += `<div class="vt-row-header rh-frame">
-        <span class="vt-row-title">Dãy ${row} · ${usedCnt} dùng / ${emptyCnt} trống</span>
-        <div class="vt-row-line"></div>
-      </div>`;
-
-      // Gom theo khung: { 1: [slot1, slot2], 2: [...] }
-      // slot1 = tầng .1 (trái), slot2 = tầng .2 (phải)
+      // Gom theo khung dùng Map
       const byKhung = new Map();
-      slots.forEach(s => {
+      frames.forEach(s => {
         const p = parseSlot(s);
         if (!byKhung.has(p.khung)) byKhung.set(p.khung, { t1: null, t2: null });
         const entry = byKhung.get(p.khung);
@@ -703,7 +672,6 @@ function renderVtGrid() {
       });
       const khungKeys = Array.from(byKhung.keys()).sort((a, b) => a - b);
 
-      // Mỗi khung = 1 hàng 2 cột
       khungKeys.forEach(k => {
         const { t1, t2 } = byKhung.get(k);
         html += '<div class="chip-row-2">';
@@ -715,12 +683,11 @@ function renderVtGrid() {
           : '<div class="vt-chip" style="visibility:hidden"></div>';
         html += '</div>';
       });
-    });
-  }
+    }
+  });
 
   grid.innerHTML = html;
 }
-
 // ============================================================
 // TÌM KIẾM
 // ============================================================
