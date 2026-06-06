@@ -169,6 +169,23 @@
       color: #a04000;
       text-align: center;
     }
+    /* Dòng quy cách: X hộp/thùng */
+    .sp-qc {
+      margin-top: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #6c757d;
+      text-align: center;
+    }
+    .sp-qc span { color: #0056b3; font-weight: 700; }
+    /* Dòng tổng tồn hộp */
+    .sp-ton-total {
+      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #186b2e;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -401,13 +418,18 @@ function renderVtGrid() {
           packStr = `${tonHT.toLocaleString('vi-VN')} hộp`;
         }
 
+        // Quy cách: X hộp/thùng
+        const qcStr   = quyCach > 0 ? `QC: <span>${quyCach} hộp/thùng</span>` : '';
+        // Tổng tồn hộp
+        const tonStr  = tonHT  > 0 ? `Tồn: ${tonHT.toLocaleString('vi-VN')} hộp` : '';
+
         return `${idx > 0 ? '<div class="slot-multi">' : ''}
           <div class="slot-info">
             <span class="sp-name">${name} ${dv}</span>
-            <div class="sp-row">
-              <span class="sp-lo">${lo}</span>
-            </div>
-            ${packStr ? `<div class="sp-pack">${packStr}</div>` : ''}
+            <div class="sp-row"><span class="sp-lo">${lo}</span></div>
+            ${qcStr    ? `<div class="sp-qc">${qcStr}</div>`           : ''}
+            ${tonStr   ? `<div class="sp-ton-total">${tonStr}</div>`   : ''}
+            ${packStr  ? `<div class="sp-pack">${packStr}</div>`       : ''}
           </div>
           ${idx > 0 ? '</div>' : ''}`;
       }).join('');
