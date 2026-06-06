@@ -624,18 +624,18 @@ function renderVtGrid() {
   // PHẦN A: Vị trí thường — nhóm theo dãy
   // ==============================================
   if (normals.length) {
-    // Gom theo dãy — key là Number để sort số đúng thứ tự
-    const byRow = {};
+    // Dùng Map để key Number không bị coerce thành String
+    const byRow = new Map();
     normals.forEach(s => {
-      const row = parseSlot(s).row; // đã là Number từ parseInt
-      if (!byRow[row]) byRow[row] = [];
-      byRow[row].push(s);
+      const row = parseSlot(s).row;
+      if (!byRow.has(row)) byRow.set(row, []);
+      byRow.get(row).push(s);
     });
-    // sort số thực: 1,2,3,4...10,11 (không phải "1","10","11","2")
-    const rowKeys = Object.keys(byRow).map(Number).sort((a, b) => a - b);
+    // Sort các key số tăng dần: 1,2,3,4...10,11
+    const rowKeys = Array.from(byRow.keys()).sort((a, b) => a - b);
 
     rowKeys.forEach(row => {
-      const slots = byRow[row];
+      const slots = byRow.get(row);
       const usedCnt  = slots.filter(s =>  usedSet.has(s)).length;
       const emptyCnt = slots.filter(s => !usedSet.has(s)).length;
 
@@ -672,18 +672,17 @@ function renderVtGrid() {
       <div class="vt-section-sep-line"></div>
     </div>`;
 
-    // Gom theo dãy — key là Number để sort số đúng thứ tự
-    const byRow = {};
+    // Dùng Map để key Number không bị coerce thành String
+    const byRow = new Map();
     frames.forEach(s => {
-      const row = parseSlot(s).row; // đã là Number từ parseInt
-      if (!byRow[row]) byRow[row] = [];
-      byRow[row].push(s);
+      const row = parseSlot(s).row;
+      if (!byRow.has(row)) byRow.set(row, []);
+      byRow.get(row).push(s);
     });
-    // sort số thực: 1,2,3...10,11 đúng thứ tự
-    const rowKeys = Object.keys(byRow).map(Number).sort((a, b) => a - b);
+    const rowKeys = Array.from(byRow.keys()).sort((a, b) => a - b);
 
     rowKeys.forEach(row => {
-      const slots = byRow[row];
+      const slots = byRow.get(row);
       const usedCnt  = slots.filter(s =>  usedSet.has(s)).length;
       const emptyCnt = slots.filter(s => !usedSet.has(s)).length;
 
@@ -694,19 +693,19 @@ function renderVtGrid() {
 
       // Gom theo khung: { 1: [slot1, slot2], 2: [...] }
       // slot1 = tầng .1 (trái), slot2 = tầng .2 (phải)
-      const byKhung = {};
+      const byKhung = new Map();
       slots.forEach(s => {
         const p = parseSlot(s);
-        if (!byKhung[p.khung]) byKhung[p.khung] = { t1: null, t2: null };
-        if (p.tang === 1) byKhung[p.khung].t1 = s;
-        else              byKhung[p.khung].t2 = s;
+        if (!byKhung.has(p.khung)) byKhung.set(p.khung, { t1: null, t2: null });
+        const entry = byKhung.get(p.khung);
+        if (p.tang === 1) entry.t1 = s;
+        else              entry.t2 = s;
       });
-      // sort khung số thực tăng dần
-      const khungKeys = Object.keys(byKhung).map(Number).sort((a, b) => a - b);
+      const khungKeys = Array.from(byKhung.keys()).sort((a, b) => a - b);
 
       // Mỗi khung = 1 hàng 2 cột
       khungKeys.forEach(k => {
-        const { t1, t2 } = byKhung[k];
+        const { t1, t2 } = byKhung.get(k);
         html += '<div class="chip-row-2">';
         html += t1
           ? chipHtml(t1, usedSet.has(t1), slotInfo, true)
